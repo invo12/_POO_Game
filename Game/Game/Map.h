@@ -1,6 +1,5 @@
 #pragma once
 #include "Game.h"
-
 class Map
 {
 public:
@@ -10,7 +9,8 @@ public:
 
 	void LoadMap(int mapMatrix[13][17]);
 	void DrawMap();
-
+	static Tile* collisionTiles[165];
+	static int totalMapCollisionTiles;
 private:
 
 	SDL_Rect src, dest;

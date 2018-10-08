@@ -1,5 +1,6 @@
 #pragma once
 #include "Game.h"
+#include "Map.h"
 
 class Player
 {
@@ -16,7 +17,6 @@ public:
 
 	//Take input and adjust player movement
 	void HandleEvents(SDL_Event& e);
-
 	//move the player
 	void Move();
 
@@ -26,6 +26,9 @@ public:
 	//show the player on the screen
 	void Render();
 
+	//collision information
+	Tile* collisionMap[165];
+
 private:
 	//positions of the player
 	int posX,posY;
@@ -33,7 +36,11 @@ private:
 	//The velocity of the player
 	int velX,velY;
 
+	//collider box
+	SDL_Rect playerCollider;
+	
 	//rendering part
 	SDL_Texture* playerTexture;
 	SDL_Rect srcRect, destRect;
+
 };

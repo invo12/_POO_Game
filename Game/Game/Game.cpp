@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "TextureManager.h"
-#include "Map.h"
 #include "Player.h"
 using namespace std;
 
@@ -9,6 +8,7 @@ Player* player = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 Map* map;
 int speed = 3;
+Tile* tile = nullptr;
 //constructor
 Game::Game()
 {}
@@ -46,6 +46,10 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 
 	player = new Player("Assets/circle.png",64,64);
 	map = new Map();
+	/*for (int i = 0; i < map->totalMapCollisionTiles; ++i)
+	{
+		player->collisionMap[i] = map->collisionTiles[i];
+	}*/
 }
 
 void Game::HandleEvents()

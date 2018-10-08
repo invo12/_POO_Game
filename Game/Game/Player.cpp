@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "GameConstants.h"
 #include "TextureManager.h"
+#include "Collision.h"
 #include <iostream>
 
 using namespace std;
@@ -8,6 +9,9 @@ using namespace std;
 Player::Player(const char* playerTextureName,int xPos,int yPos)
 {
 	playerTexture = TextureManager::LoadTexture(playerTextureName);
+	
+	playerCollider.w = playerWidth;
+	playerCollider.h = playerHeight;
 
 	//Initialize the offsets
 	posX = xPos;
@@ -66,23 +70,27 @@ void Player::HandleEvents(SDL_Event& event)
 }
 void Player::Move()
 {
-	//Move the player on X axis
+	//Move the player on X axis and update box collider position
 	posX += velX;
+	playerCollider.x = posX;
 
 	//keep player on the screen
-	if ((posX < 64) || (posX + playerWidth > (GameConstants::screenWidth - 64)))
+	if ((posX < 64) || (posX + playerWidth > (GameConstants::screenWidth - 64)) || Collision::touchCollisionTile(playerCollider,Map::collisionTiles))// || touchCollisionTile(boxCollider,test))
 	{
 		//don't move
 		posX -= velX;
+		playerCollider.x = posX;
 	}
-	//Move the player on Y axis
+	//Move the player on Y axis and update box collider position
 	posY += velY;
+	playerCollider.y = posY;
 
 	//again,keep player on the screen
-	if ((posY < 64) || (posY + playerHeight > (GameConstants::screenHeight - 64)))
+	if ((posY < 64) || (posY + playerHeight > (GameConstants::screenHeight - 64)) || Collision::touchCollisionTile(playerCollider, Map::collisionTiles))// || touchCollisionTile(boxCollider, test))
 	{
 		//go back to initial position 
 		posY -= velY;
+		playerCollider.y = posY;
 	}
 }
 
@@ -97,12 +105,9 @@ void Player::Update()
 	destRect.h = 64;
 	destRect.x = posX;
 	destRect.y = posY;
-
-	cout << destRect.x;
 }
 
 void Player::Render()
 {
 	SDL_RenderCopy(Game::renderer, playerTexture, &srcRect, &destRect);
 }
-	
