@@ -1,7 +1,7 @@
 #pragma once
 #include "Game.h"
 #include "Map.h"
-
+#include "Bomb.h"
 class Player
 {
 public:
@@ -26,8 +26,7 @@ public:
 	//show the player on the screen
 	void Render();
 
-	//collision information
-	Tile* collisionMap[165];
+	void PlaceBomb();
 
 private:
 	//positions of the player
@@ -42,5 +41,12 @@ private:
 	//rendering part
 	SDL_Texture* playerTexture;
 	SDL_Rect srcRect, destRect;
+
+	//BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM
+	Bomb* bomb[10];
+	int currentNumberOfBombs;
+	int totalNumberOfBombs;
+
+	int mBombPower;
 
 };

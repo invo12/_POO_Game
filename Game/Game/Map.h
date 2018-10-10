@@ -1,5 +1,6 @@
 #pragma once
 #include "Game.h"
+#include <iostream>
 class Map
 {
 public:
@@ -11,6 +12,10 @@ public:
 	void DrawMap();
 	static Tile* collisionTiles[165];
 	static int totalMapCollisionTiles;
+	static int GetTileType(int x, int y) 
+	{
+		//std::cout << x / 64 << ' ' << y / 64<<' '<<map[x/64][y/64] << std::endl;
+		return map[y/64][x/64]; }
 private:
 
 	SDL_Rect src, dest;
@@ -19,5 +24,5 @@ private:
 	SDL_Texture* grass;
 	SDL_Texture* wall;
 
-	int map[20][25];
+	static int map[13][17];
 };

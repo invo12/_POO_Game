@@ -8,8 +8,10 @@ using namespace std;
 
 Player::Player(const char* playerTextureName,int xPos,int yPos)
 {
+	//load the texture on the player
 	playerTexture = TextureManager::LoadTexture(playerTextureName);
 	
+	//set the collider
 	playerCollider.w = playerWidth;
 	playerCollider.h = playerHeight;
 
@@ -21,8 +23,21 @@ Player::Player(const char* playerTextureName,int xPos,int yPos)
 	velX = 0;
 	velY = 0;
 
-	//source rectangle details
+	//initialize the player number of bombs
+	currentNumberOfBombs = 0;
+	totalNumberOfBombs = 3;
 
+	//set the proprietes of the bomb
+	mBombPower = 2;
+
+	//get the texture dimensions from the file
+	srcRect.h = 1024;
+	srcRect.w = 1024;
+	srcRect.x = 0;
+	srcRect.y = 0;
+
+	destRect.w = 64;
+	destRect.h = 64;
 }
 
 void Player::HandleEvents(SDL_Event& event)
@@ -64,6 +79,10 @@ void Player::HandleEvents(SDL_Event& event)
 		case SDLK_RIGHT:
 			velX -= playerVelocity;
 			break;
+		//place a bomb if release the space key
+		case SDLK_SPACE:
+			PlaceBomb();
+			break;
 		}
 	}
 	Move();
@@ -96,18 +115,76 @@ void Player::Move()
 
 void Player::Update()
 {
-	srcRect.h = 1024;
-	srcRect.w = 1024;
-	srcRect.x = 0;
-	srcRect.y = 0;
-
-	destRect.w = 64;
-	destRect.h = 64;
+	//move the player in a certain direction
 	destRect.x = posX;
 	destRect.y = posY;
+
+	for (int i = 0; i < totalNumberOfBombs; ++i)
+	{
+		if (bomb[i] != nullptr)
+		{
+			bomb[i]->Update();
+			if (bomb[i]->destroy)
+			{
+				delete bomb[i];
+				bomb[i] = nullptr;
+				currentNumberOfBombs--;
+				cout << currentNumberOfBombs << endl;
+			}
+		}
+	}
 }
 
 void Player::Render()
 {
+	//render each active bomb
+	for (int i = 0; i < totalNumberOfBombs; ++i)
+	{
+		if (bomb[i] != nullptr)
+		{
+			bomb[i]->Render();
+		}
+	}
+	//and the player
 	SDL_RenderCopy(Game::renderer, playerTexture, &srcRect, &destRect);
+}
+
+void Player::PlaceBomb()
+{
+	//we have totalNumberOfBombs maximum and we must insert one to the index,
+	int index = -1;
+
+	//calculate the center of the player
+	//and place the bomb acordingly
+	int x = playerCollider.x + playerCollider.w / 2;
+	x = x - x % 64;
+
+	int y = playerCollider.y + playerCollider.h / 2;
+	y = y - y % 64;
+
+	//if we haven't already placed all bombs
+	if (currentNumberOfBombs < totalNumberOfBombs)
+	{
+		for (int i = 0; i < totalNumberOfBombs; ++i)
+		{
+			//check if it's an empty place
+			if (index == -1 && bomb[i] == nullptr)
+			{
+				index = i;
+			}
+			else if(bomb[i] != nullptr)
+			{
+				//check if a bomb it's not already there
+				if (bomb[i]->GetBomb().x == x && bomb[i]->GetBomb().y == y)
+					return;
+			}
+			
+		}
+		//if we find an empty place or a bomb it's not already there place the bomb
+		if (index != -1)
+		{
+			bomb[index] = new Bomb(x, y,mBombPower);
+			currentNumberOfBombs++;
+		}
+	}
 }
