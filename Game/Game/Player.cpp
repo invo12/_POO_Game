@@ -28,7 +28,7 @@ Player::Player(const char* playerTextureName,int xPos,int yPos)
 	totalNumberOfBombs = 3;
 
 	//set the proprietes of the bomb
-	mBombPower = 2;
+	mBombPower = 10;
 
 	//get the texture dimensions from the file
 	srcRect.h = 1024;

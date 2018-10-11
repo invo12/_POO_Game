@@ -46,3 +46,6 @@ private:
 	//positions
 	int xPos, yPos;
 };
+
+void setDestination(SDL_Rect &dest, int x, int y);
+void GetMaxDistanceInDirection(int &maxDistance, int bombPower, int xPos, int yPos, int xSign, int ySign);

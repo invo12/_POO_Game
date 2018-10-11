@@ -36,11 +36,12 @@ Map::Map()
 }
 
 int Map::totalMapCollisionTiles = 0;
-Tile* Map::collisionTiles[165] = { nullptr };
+list<Tile*> Map::collisionTiles{};
 
 void Map::LoadMap(int mapMatrix[13][17])
 {
 	int k = 0;
+	list<Tile*>::iterator it = collisionTiles.begin();
 	for (int i = 0; i < 13; i++)
 	{
 		for (int j = 0; j < 17; j++)
@@ -49,7 +50,7 @@ void Map::LoadMap(int mapMatrix[13][17])
 			int type = map[i][j];										//get type of the tile
 			if (type == 0 || i == 0 || j == 0 || i == 12 || j == 16)	//if it's not grass or in the outer rectangle
 				continue;
-			collisionTiles[k++] = new Tile(j*64, i*64, type);			//add to the collision vector
+			collisionTiles.push_front(new Tile(j * 64, i * 64, type));
 		}
 	}
 	totalMapCollisionTiles = k;									//save the total number of tiles
@@ -82,4 +83,10 @@ void Map::DrawMap()
 
 		}
 	}
+}
+
+void Map::DestroyBlock(int x, int y)
+{
+	map[y / 64][x / 64] = 0;
+	Collision::RemoveCollisionFromMap(collisionTiles, x, y);
 }

@@ -1,6 +1,7 @@
 #include "Collision.h"
 #include "Map.h"
 #include <iostream>
+
 bool Collision::checkCollisions(SDL_Rect a, SDL_Rect b)
 {
 	int aLeft, bLeft;
@@ -41,15 +42,30 @@ bool Collision::checkCollisions(SDL_Rect a, SDL_Rect b)
 	//if there is and intersection then objects collide
 	return true;
 }
-bool Collision::touchCollisionTile(SDL_Rect playerCollider, Tile* tiles[])
+
+bool Collision::touchCollisionTile(SDL_Rect playerCollider, list<Tile*> tiles)
 {
-	for (int i = 0; i < Map::totalMapCollisionTiles; ++i)
+	list<Tile*>::iterator it;
+	for (it = tiles.begin(); it != tiles.end(); ++it)
 	{
-		if (checkCollisions(playerCollider, tiles[i]->getCollider()))
+		if (checkCollisions(playerCollider, (*it)->getCollider()))
 		{
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void Collision::RemoveCollisionFromMap(list<Tile*> &tiles,int xPos,int yPos)
+{
+	list<Tile*>::iterator it;
+	for (it = tiles.begin(); it != tiles.end(); ++it)
+	{
+		if ((*it)->getCollider().x == xPos && (*it)->getCollider().y == yPos)
+		{
+			tiles.remove(*it);
+			return;
+		}
+	}
 }

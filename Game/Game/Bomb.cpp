@@ -53,33 +53,36 @@ void Bomb::Render()
 	}
 	else
 	{
-		dest.x = xPos;
-		dest.y = yPos;
+		//up
+		setDestination(dest, xPos, yPos);
 		TextureManager::Draw(mExplosionTexture,src,dest);
 		for (int i = 0; i < mMaxUp; ++i)
 		{
-			dest.y -= 64;
+			dest.y -= GameConstants::tileHeight;
 			TextureManager::Draw(mExplosionUpTexture, src, dest);
 		}
-		dest.x = xPos;
-		dest.y = yPos;
+
+		//down
+		setDestination(dest, xPos, yPos);
 		for (int i = 0; i < mMaxDown; ++i)
 		{
-			dest.y += 64;
+			dest.y += GameConstants::tileHeight;
 			TextureManager::Draw(mExplosionUpTexture, src, dest);
 		}
-		dest.x = xPos;
-		dest.y = yPos;
+
+		//right
+		setDestination(dest, xPos, yPos);
 		for (int i = 0; i < mMaxRight; ++i)
 		{
-			dest.x += 64;
+			dest.x += GameConstants::tileWidth;
 			TextureManager::Draw(mExplosionRightTexture, src, dest);
 		}
-		dest.x = xPos;
-		dest.y = yPos;
+
+		//left
+		setDestination(dest, xPos, yPos);
 		for (int i = 0; i < mMaxLeft; ++i)
 		{
-			dest.x -= 64;
+			dest.x -= GameConstants::tileWidth;
 			TextureManager::Draw(mExplosionRightTexture, src, dest);
 		}
 	}
@@ -101,69 +104,33 @@ void Bomb::Explode()
 	int yPos = dest.y;
 	int temp;
 	//up
-	for (int i = 0; i < mBombPower; ++i)
-	{
-		temp = Map::GetTileType(xPos, yPos - (i + 1) * 64);
-		if (temp == 0)
-		{
-			mMaxUp++;
-		}
-		else if (temp == 1)
-		{
-			break;
-		}
-		else if (temp == 2)
-		{
-			mMaxUp++;
-			break;
-		}
-	}
+	GetMaxDistanceInDirection(mMaxUp, mBombPower, xPos, yPos, 0, -1);
 	
 	//down
-	for (int i = 0; i < mBombPower; ++i)
-	{
-		temp = Map::GetTileType(xPos, yPos + (i + 1) * 64);
-		if (temp == 0)
-		{
-			mMaxDown++;
-		}
-		else if (temp == 1)
-		{
-			break;
-		}
-		else if (temp == 2)
-		{
-			mMaxDown++;
-			break;
-		}
-	}
+	GetMaxDistanceInDirection(mMaxDown, mBombPower, xPos, yPos, 0, 1);
 	
 	//left
-	for (int i = 0; i < mBombPower; ++i)
-	{
-		temp = Map::GetTileType(xPos - (i+1)*64, yPos);
-		if (temp == 0)
-		{
-			mMaxLeft++;
-		}
-		else if (temp == 1)
-		{
-			break;
-		}
-		else if (temp == 2)
-		{
-			mMaxLeft++;
-			break;
-		}
-	}
+	GetMaxDistanceInDirection(mMaxLeft, mBombPower, xPos, yPos, -1, 0);
 	
 	//right
-	for (int i = 0; i < mBombPower; ++i)
+	GetMaxDistanceInDirection(mMaxRight, mBombPower, xPos, yPos, 1, 0);
+}
+
+void setDestination(SDL_Rect &dest,int x,int y)
+{
+	dest.x = x;
+	dest.y = y;
+}
+
+void GetMaxDistanceInDirection(int &maxDistance,int bombPower,int xPos,int yPos,int xSign,int ySign)
+{
+	int temp = 0;
+	for (int i = 0; i < bombPower; ++i)
 	{
-		temp = Map::GetTileType(xPos + (i+1) * 64, yPos);
+		temp = Map::GetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i+1) * GameConstants::tileHeight * ySign);
 		if (temp == 0)
 		{
-			mMaxRight++;
+			maxDistance++;
 		}
 		else if (temp == 1)
 		{
@@ -171,9 +138,9 @@ void Bomb::Explode()
 		}
 		else if (temp == 2)
 		{
-			mMaxRight++;
+			maxDistance++;
+			Map::DestroyBlock(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
 			break;
 		}
 	}
-	std::cout << mMaxUp << ' ' << mMaxRight << ' ' << mMaxDown << ' ' << mMaxLeft << std::endl;
 }
