@@ -1,15 +1,24 @@
 #include "Bomb.h"
 #include "Map.h"
+#include "Player.h"
 #include <iostream>
+using namespace std;
+SDL_Texture* Bomb::mBombTexture;
+SDL_Texture* Bomb::mExplosionTexture;
+SDL_Texture* Bomb::mExplosionUpTexture;
+SDL_Texture* Bomb::mExplosionRightTexture;
+list<SDL_Rect> Bomb::notSolidBombs{};
 
-Bomb::Bomb(int x,int y,int bombPower)
+void Bomb::Init()
 {
-	//load the texture
 	mBombTexture = TextureManager::LoadTexture("Assets/bomb.png");
 	mExplosionTexture = TextureManager::LoadTexture("Assets/explosion.png");
 	mExplosionUpTexture = TextureManager::LoadTexture("Assets/explosion_up.png");
 	mExplosionRightTexture = TextureManager::LoadTexture("Assets/explosion_right.png");
+}
 
+Bomb::Bomb(int x,int y,int bombPower)
+{
 	//cut the bomb from file
 	src.x = src.y = 0;
 	src.w = 300;
@@ -29,6 +38,29 @@ Bomb::Bomb(int x,int y,int bombPower)
 
 	xPos = x;
 	yPos = y;
+}
+
+Bomb::~Bomb()
+{
+	if (!solid)
+	{
+		Map::SetTileType(xPos, yPos, TileType::GRASS);
+		RemoveSolidBombFromList(this->GetBomb());
+	}
+	//up
+	RemoveExplosionColliders(mMaxUp, xPos, yPos, 0, -1);
+
+	//down
+	RemoveExplosionColliders(mMaxDown, xPos, yPos, 0, 1);
+
+	//left
+	RemoveExplosionColliders(mMaxLeft, xPos, yPos, -1, 0);
+
+	//right
+	RemoveExplosionColliders(mMaxRight, xPos, yPos, 1, 0);
+
+	Map::DestroyBlock(xPos, yPos);
+	Collision::RemoveCollisionFromMap(Map::explosionTiles, xPos, yPos);
 }
 
 void Bomb::Update()
@@ -93,11 +125,6 @@ SDL_Rect Bomb::GetBomb()
 	return dest;
 }
 
-Bomb::~Bomb()
-{
-	//std::cout << "Bomb exploded";
-}
-
 void Bomb::Explode()
 {
 	int xPos = dest.x;
@@ -114,6 +141,9 @@ void Bomb::Explode()
 	
 	//right
 	GetMaxDistanceInDirection(mMaxRight, mBombPower, xPos, yPos, 1, 0);
+
+	Map::SetTileType(xPos, yPos, TileType::EXPLOSION);
+	Collision::AddCollisionOnMap(Map::explosionTiles, xPos, yPos, TileType::EXPLOSION);
 }
 
 void setDestination(SDL_Rect &dest,int x,int y)
@@ -124,23 +154,88 @@ void setDestination(SDL_Rect &dest,int x,int y)
 
 void GetMaxDistanceInDirection(int &maxDistance,int bombPower,int xPos,int yPos,int xSign,int ySign)
 {
-	int temp = 0;
+	TileType temp;
 	for (int i = 0; i < bombPower; ++i)
 	{
 		temp = Map::GetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i+1) * GameConstants::tileHeight * ySign);
-		if (temp == 0)
+		if (temp == TileType::GRASS)
 		{
 			maxDistance++;
+			Map::SetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::EXPLOSION);
+			Collision::AddCollisionOnMap(Map::explosionTiles, xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::EXPLOSION);
 		}
-		else if (temp == 1)
+		else if (temp == TileType::WALL)
 		{
 			break;
 		}
-		else if (temp == 2)
+		else if (temp == TileType::DESTROYABLEBLOCK)
 		{
+			Map::SetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::EXPLOSION);
 			maxDistance++;
 			Map::DestroyBlock(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
 			break;
 		}
+		else if (temp == TileType::BOMB)
+		{
+			ForceExplosion(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
+			break;
+		}
+	}
+}
+
+void RemoveExplosionColliders(int maxDistance,int xPos,int yPos,int xSign,int ySign)
+{
+	for (int i = 0; i < maxDistance; ++i)
+	{
+		Collision::RemoveCollisionFromMap(Map::explosionTiles, xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
+	}
+}
+
+void Bomb::MakeBombSolid()
+{
+	mBombCollider.x = xPos;
+	mBombCollider.y = yPos;
+	mBombCollider.w = GameConstants::tileWidth;
+	mBombCollider.h = GameConstants::tileHeight;
+	solid = true;
+}
+
+SDL_Rect Bomb::GetBombCollider()
+{
+	return mBombCollider;
+}
+
+void Bomb::SetTimerToExplosion()
+{
+	startTime = SDL_GetTicks() - mTimeToExplode;
+}
+
+void ForceExplosion(int xPos,int yPos)
+{
+	for (int i = 0; i < Player::totalNumberOfBombs; ++i)
+	{
+		if (Player::bomb[i] != nullptr)
+		{
+			if (!Player::bomb[i]->explode && Player::bomb[i]->GetBomb().x == xPos && Player::bomb[i]->GetBomb().y == yPos)
+			{
+				Player::bomb[i]->SetTimerToExplosion();
+			}
+		}
+	}
+}
+
+void AddNotSolidBombOnList(SDL_Rect bomb)
+{
+	Bomb::notSolidBombs.push_front(bomb);
+}
+
+void RemoveSolidBombFromList(SDL_Rect bomb)
+{
+	list<SDL_Rect>::iterator it;
+	for (it = Bomb::notSolidBombs.begin(); it != Bomb::notSolidBombs.end(); ++it)
+	{
+		if(SDL_RectEquals(&bomb,&(*it)))
+			Bomb::notSolidBombs.erase(it);
+		break;
 	}
 }

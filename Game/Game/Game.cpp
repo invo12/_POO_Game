@@ -4,11 +4,11 @@
 using namespace std;
 
 Player* player = nullptr;
+Player* player2 = nullptr;
 
 SDL_Renderer* Game::renderer = nullptr;
 Map* map;
-int speed = 3;
-Tile* tile = nullptr;
+
 //constructor
 Game::Game()
 {}
@@ -44,12 +44,10 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 		isRunning = false;
 	}
 
-	player = new Player("Assets/circle.png",64,64);
+	player = new Player("Assets/circle.png",GameConstants::tileWidth, GameConstants::tileHeight,SDLK_UP,SDLK_DOWN,SDLK_LEFT,SDLK_RIGHT,SDLK_SPACE);
+	player2 = new Player("Assets/circle.png", GameConstants::tileWidth, GameConstants::tileHeight, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_q);
 	map = new Map();
-	/*for (int i = 0; i < map->totalMapCollisionTiles; ++i)
-	{
-		player->collisionMap[i] = map->collisionTiles[i];
-	}*/
+	Bomb::Init();
 }
 
 void Game::HandleEvents()
@@ -63,19 +61,36 @@ void Game::HandleEvents()
 		isRunning = false;
 		break;
 	}
-	player->HandleEvents(event);
+	if(player != nullptr)
+		player->HandleEvents(event);
+	if (player2 != nullptr)
+		player2->HandleEvents(event);
 }
 
 void Game::Update()
 {
-	player->Update();
+	if (player != nullptr)
+	{
+		player->Update();
+		if (player->die)
+			DeletePlayer(player);
+	}
+	if (player2 != nullptr)
+	{
+		player2->Update();
+		if (player2->die)
+			DeletePlayer(player2);
+	}
 }
 
 void Game::Render()
 {
 	SDL_RenderClear(renderer);
 	map->DrawMap();
-	player->Render();
+	if (player != nullptr)
+		player->Render();
+	if (player2 != nullptr)
+		player2->Render();
 	//add stuff to render
 	SDL_RenderPresent(renderer);
 }

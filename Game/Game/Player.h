@@ -6,15 +6,15 @@ class Player
 {
 public:
 	//dimensions of the player
-	static const int playerWidth = 64;
-	static const int playerHeight = 64;
+	static const int playerWidth = GameConstants::tileWidth;
+	static const int playerHeight = GameConstants::tileHeight;
 
 	//max velocity of the player
 	static const int playerVelocity = 2;
 
 	//constructor
-	Player(const char* playerTextureName, int xPos, int yPos);
-
+	Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKey, unsigned int downKey, unsigned int leftKey, unsigned int rightKey,unsigned int bombKey);
+	~Player();
 	//Take input and adjust player movement
 	void HandleEvents(SDL_Event& e);
 	//move the player
@@ -27,6 +27,16 @@ public:
 	void Render();
 
 	void PlaceBomb();
+
+	static Bomb* bomb[20];
+	static int totalNumberOfBombs;
+	bool die = false;
+	
+	unsigned int upKey;
+	unsigned int downKey;
+	unsigned int leftKey;
+	unsigned int rightKey;
+	unsigned int bombKey;
 
 private:
 	//positions of the player
@@ -43,10 +53,14 @@ private:
 	SDL_Rect srcRect, destRect;
 
 	//BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM
-	Bomb* bomb[10];
 	int currentNumberOfBombs;
-	int totalNumberOfBombs;
 
+	//proprietes of the player
 	int mBombPower;
 
+	Bomb* currentBomb;
+	static Player* players[2];
+	static int numberOfPlayers;
 };
+
+void DeletePlayer(Player* &player);

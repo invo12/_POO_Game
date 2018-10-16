@@ -4,6 +4,8 @@
 #include "SDL_image.h"
 #include "Tile.h"
 #include "Collision.h"
+#include "GameConstants.h"
+#include <list>
 class Game
 {
 public:
@@ -25,4 +27,3 @@ private:
 	bool isRunning;
 	SDL_Window *window;
 };
-

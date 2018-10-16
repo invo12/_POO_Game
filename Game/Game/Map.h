@@ -13,21 +13,26 @@ public:
 
 	void LoadMap(int mapMatrix[13][17]);
 	void DrawMap();
+
 	static list<Tile*> collisionTiles;
+	static list<Tile*> explosionTiles;
 	static int totalMapCollisionTiles;
-	static int GetTileType(int x, int y) 
+	static TileType GetTileType(int x, int y) 
 	{
-		//std::cout << x / 64 << ' ' << y / 64<<' '<<map[x/64][y/64] << std::endl;
-		return map[y/64][x/64]; 
+		return static_cast<TileType>(map[y/GameConstants::tileHeight][x/GameConstants::tileWidth]); 
+	}
+	static void SetTileType(int x, int y,TileType type)
+	{
+		map[y / GameConstants::tileHeight][x / GameConstants::tileWidth] = static_cast<int>(type);
 	}
 	static void DestroyBlock(int x,int y);
 private:
 
 	SDL_Rect src, dest;
 
-	SDL_Texture* brick;
-	SDL_Texture* grass;
-	SDL_Texture* wall;
+	SDL_Texture* mWall;
+	SDL_Texture* mGrass;
+	SDL_Texture* mDestroyableBlock;
 
 	static int map[13][17];
 };

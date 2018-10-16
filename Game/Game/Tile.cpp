@@ -1,7 +1,7 @@
 #include "Tile.h"
 #include "GameConstants.h"
 
-Tile::Tile(int x, int y, int tileType)
+Tile::Tile(int x, int y, TileType tileType)
 {
 	//set the collider of the tile
 	tileCollider.x = x;
@@ -13,7 +13,7 @@ Tile::Tile(int x, int y, int tileType)
 	type = tileType;
 }
 
-int Tile::getType()
+TileType Tile::getType()
 {
 	return type;
 }

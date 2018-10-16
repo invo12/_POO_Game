@@ -23,13 +23,13 @@ int lvl1[13][17] = {
 
 Map::Map()
 {
-	brick = TextureManager::LoadTexture("Assets/brick.png");
-	grass = TextureManager::LoadTexture("Assets/grass.png");
-	wall = TextureManager::LoadTexture("Assets/wall.png");
+	mWall = TextureManager::LoadTexture("Assets/wall.png");
+	mGrass = TextureManager::LoadTexture("Assets/grass.png");
+	mDestroyableBlock = TextureManager::LoadTexture("Assets/destroyable_block.png");
 
 	LoadMap(lvl1);
-	src.w = dest.w = 64;
-	src.h = dest.h = 64;
+	src.w = dest.w = GameConstants::tileWidth;
+	src.h = dest.h = GameConstants::tileHeight;
 
 	src.x = src.y = 0;
 	dest.x = dest.y = 0;
@@ -37,6 +37,7 @@ Map::Map()
 
 int Map::totalMapCollisionTiles = 0;
 list<Tile*> Map::collisionTiles{};
+list<Tile*> Map::explosionTiles{};
 
 void Map::LoadMap(int mapMatrix[13][17])
 {
@@ -48,9 +49,9 @@ void Map::LoadMap(int mapMatrix[13][17])
 		{
 			map[i][j] = mapMatrix[i][j];								//copy the map
 			int type = map[i][j];										//get type of the tile
-			if (type == 0 || i == 0 || j == 0 || i == 12 || j == 16)	//if it's not grass or in the outer rectangle
+			if (type == static_cast<int>(TileType::GRASS) || i == 0 || j == 0 || i == 12 || j == 16)	//if it's not grass or in the outer rectangle
 				continue;
-			collisionTiles.push_front(new Tile(j * 64, i * 64, type));
+			collisionTiles.push_front(new Tile(j * GameConstants::tileWidth, i * GameConstants::tileHeight, static_cast<TileType>(type)));
 		}
 	}
 	totalMapCollisionTiles = k;									//save the total number of tiles
@@ -58,35 +59,37 @@ void Map::LoadMap(int mapMatrix[13][17])
 
 void Map::DrawMap()
 {
-	int type = 0;
+	TileType type;
 	int k = 0;
 
 	for (int i = 0; i < 13; i++)
 	{
 		for (int j = 0; j < 17; j++)
 		{
-			type = map[i][j];
-			dest.x = j * 64;
-			dest.y = i * 64;
+			type = static_cast<TileType>(map[i][j]);
+			dest.x = j * GameConstants::tileWidth;
+			dest.y = i * GameConstants::tileHeight;
 			switch (type)
 			{
-			case 0:
-				TextureManager::Draw(grass, src, dest);
+			case TileType::DESTROYABLEBLOCK:
+				TextureManager::Draw(mDestroyableBlock, src, dest);
 				break;
-			case 1:
-				TextureManager::Draw(brick, src, dest);
+			case TileType::WALL:
+				TextureManager::Draw(mWall, src, dest);
 				break;
-			case 2:
-				TextureManager::Draw(wall, src, dest);
+			case TileType::EXPLOSION:
+				TextureManager::Draw(mWall, src, dest);
+				break;
+			default:
+				TextureManager::Draw(mGrass, src, dest);
 				break;
 			}
-
 		}
 	}
 }
 
 void Map::DestroyBlock(int x, int y)
 {
-	map[y / 64][x / 64] = 0;
+	map[y / GameConstants::tileHeight][x / GameConstants::tileWidth] = static_cast<int>(TileType::GRASS);
 	Collision::RemoveCollisionFromMap(collisionTiles, x, y);
 }

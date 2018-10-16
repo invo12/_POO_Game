@@ -57,6 +57,34 @@ bool Collision::touchCollisionTile(SDL_Rect playerCollider, list<Tile*> tiles)
 	return false;
 }
 
+bool Collision::touchCollisionTile(SDL_Rect playerCollider, list<SDL_Rect> bombs, SDL_Rect* currentBomb)
+{
+	list<SDL_Rect>::iterator it;
+	if (currentBomb != nullptr)
+	{
+		for (it = bombs.begin(); it != bombs.end(); ++it)
+		{
+			if (!SDL_RectEquals(currentBomb, &(*it)) && checkCollisions(playerCollider, (*it)))
+			{
+				return true;
+			}
+		}
+	}
+	else
+	{
+		for (it = bombs.begin(); it != bombs.end(); ++it)
+		{
+			if (abs(playerCollider.x - (*it).x) < 60 && (abs(playerCollider.y - (*it).y) < 60))
+				return false;
+			if ( checkCollisions(playerCollider, (*it)))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void Collision::RemoveCollisionFromMap(list<Tile*> &tiles,int xPos,int yPos)
 {
 	list<Tile*>::iterator it;
@@ -64,8 +92,16 @@ void Collision::RemoveCollisionFromMap(list<Tile*> &tiles,int xPos,int yPos)
 	{
 		if ((*it)->getCollider().x == xPos && (*it)->getCollider().y == yPos)
 		{
+			Map::SetTileType(xPos, yPos,TileType::GRASS);
+			Tile* temp = *it;
 			tiles.remove(*it);
+			delete temp;
 			return;
 		}
 	}
+}
+
+void Collision::AddCollisionOnMap(list<Tile*> &tiles, int xPos, int yPos,TileType type)
+{
+	tiles.push_front(new Tile(xPos, yPos, type));
 }
