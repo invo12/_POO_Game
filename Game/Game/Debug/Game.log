@@ -1,8 +1,2 @@
-﻿  Bomb.cpp
-d:\facultate\poo giooooooc\game\game\bomb.cpp(69): warning C4018: '>': signed/unsigned mismatch
-d:\facultate\poo giooooooc\game\game\bomb.cpp(75): warning C4018: '>': signed/unsigned mismatch
-d:\facultate\poo giooooooc\game\game\bomb.cpp(135): warning C4101: 'temp': unreferenced local variable
-  Game.cpp
-  Player.cpp
-  Generating Code...
+﻿  Player.cpp
   Game.vcxproj -> D:\facultate\POO GIOOOOOOC\Game\Debug\Game.exe

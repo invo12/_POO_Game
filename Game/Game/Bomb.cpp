@@ -60,7 +60,7 @@ Bomb::~Bomb()
 	//remove both explosion colliders and bomb
 	Collision::RemoveCollisionFromMap(Map::bombTiles, xPos, yPos);
 	Collision::RemoveCollisionFromMap(Map::explosionTiles, xPos, yPos);
-		Player::totalNumberOfBombs--;
+	Player::totalNumberOfBombs--;
 }
 
 void Bomb::Update()
@@ -213,14 +213,12 @@ void Bomb::SetTimerToExplosion()
 //force the bomb found on x,y coordinates to explode
 void ForceExplosion(int xPos,int yPos)
 {
-	for (int i = 0; i < Player::totalNumberOfBombs; ++i)
+	list<Bomb*>::iterator it;
+	for (it = Player::bombs.begin(); it != Player::bombs.end(); ++it)
 	{
-		if (Player::bomb[i] != nullptr)
+		if (!(*it)->explode && (*it)->GetBomb().x == xPos && (*it)->GetBomb().y == yPos)
 		{
-			if (!Player::bomb[i]->explode && Player::bomb[i]->GetBomb().x == xPos && Player::bomb[i]->GetBomb().y == yPos)
-			{
-				Player::bomb[i]->SetTimerToExplosion();
-			}
+			(*it)->SetTimerToExplosion();
 		}
 	}
 }

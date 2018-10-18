@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Bomb* Player::bomb[20] = { nullptr };
+list<Bomb*> Player::bombs{};
 int Player::totalNumberOfBombs = 0;
 int Player::numberOfPlayers = 0;
 Player* Player::players[2] = {nullptr};
@@ -152,44 +152,38 @@ void Player::Update()
 	//move the player in a certain direction
 	destRect.x = posX;
 	destRect.y = posY;
+	list<Bomb*>::iterator bombIterator;
 
-	for (int i = 0; i < totalNumberOfBombs; ++i)
+	for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
 	{
-		if (bomb[i] != nullptr)
+		(*bombIterator)->Update();
+		if ((*bombIterator)->set[playerNumber] == 0 && abs(posX - (*bombIterator)->GetBomb().x) < 60 && abs(posY - (*bombIterator)->GetBomb().y) < 60)
 		{
-			bomb[i]->Update();
-
-			if (bomb[i]->set[playerNumber] == 0 && abs(players[playerNumber]->posX - bomb[i]->GetBomb().x) < 60 && abs(players[playerNumber]->posY - bomb[i]->GetBomb().y) < 60)
+			(*bombIterator)->set[playerNumber] = 1;
+			ignoredCollisions.push_front((*bombIterator)->GetBomb());
+		}
+		if ((*bombIterator)->set[playerNumber] != 2 && ((abs((*bombIterator)->GetBomb().x - posX) > GameConstants::tileWidth - 1) || (abs((*bombIterator)->GetBomb().y - posY) > GameConstants::tileHeight - 1)))
+		{
+			list<SDL_Rect>::iterator it;
+			for (it = ignoredCollisions.begin(); it != ignoredCollisions.end(); ++it)
 			{
-				bomb[i]->set[playerNumber] = 1;
-				ignoredCollisions.push_front(bomb[i]->GetBomb());
-			}
-			if (bomb[i]->set[playerNumber] != 2 && ((abs(bomb[i]->GetBomb().x - players[playerNumber]->posX) > GameConstants::tileWidth - 1) || (abs(bomb[i]->GetBomb().y - players[playerNumber]->posY) > GameConstants::tileHeight - 1)))
-			{
-				if (!players[playerNumber]->ignoredCollisions.empty())
+				if (SDL_RectEquals(&(*it), &(*bombIterator)->GetBomb()))
 				{
-					list<SDL_Rect>::iterator it;
-					for (it = ignoredCollisions.begin(); it != ignoredCollisions.end(); ++it)
-					{
-						if (SDL_RectEquals(&(*it), &bomb[i]->GetBomb()))
-						{
-							cout << "removed\n";
-							ignoredCollisions.erase(it);
-							break;
-						}
-					}
-					bomb[i]->set[playerNumber] = 2;
+					cout << "removed\n";
+					ignoredCollisions.erase(it);
+					break;
 				}
 			}
-
-			if (bomb[i]->destroy)
-			{
-				Collision::RemoveCollisionFromMap(Map::bombTiles, bomb[i]->GetBomb().x, bomb[i]->GetBomb().y);
-				delete bomb[i];
-				bomb[i] = nullptr;
-				currentNumberOfBombs--;
-			}
+			(*bombIterator)->set[playerNumber] = 2;
 		}
+		if ((*bombIterator)->destroy)
+		{
+			Collision::RemoveCollisionFromMap(Map::bombTiles, (*bombIterator)->GetBomb().x, (*bombIterator)->GetBomb().y);
+			bombs.remove(*bombIterator);
+			currentNumberOfBombs--;
+			break;
+		}
+
 	}
 	if (Collision::touchCollisionTile(playerCollider, Map::explosionTiles))
 	{
@@ -199,13 +193,11 @@ void Player::Update()
 
 void Player::Render()
 {
+	list<Bomb*>::iterator bombIterator;
 	//render each active bomb
-	for (int i = 0; i < totalNumberOfBombs; ++i)
+	for (bombIterator = bombs.begin();bombIterator != bombs.end();++bombIterator)
 	{
-		if (bomb[i] != nullptr)
-		{
-			bomb[i]->Render();
-		}
+		(*bombIterator)->Render();
 	}
 	//and the player
 	SDL_RenderCopy(Game::renderer, playerTexture, &srcRect, &destRect);
@@ -225,37 +217,30 @@ void Player::PlaceBomb()
 	y = y - y % GameConstants::tileHeight;
 
 	cout << currentNumberOfBombs << ' ';
+
+	list<Bomb*>::iterator bombIterator;
 	//if we haven't already placed all bombs
 	if (currentNumberOfBombs < maxNumberOfBombs)
 	{
-		for (int i = 0; i < maxNumberOfBombs; ++i)
+		for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
 		{
-			//check if it's an empty place
-			if (index == -1 && bomb[i] == nullptr)
-			{
-				index = i;
-			}
-			else if(bomb[i] != nullptr)
-			{
-				//check if a bomb it's not already there
-				if (bomb[i]->GetBomb().x == x && bomb[i]->GetBomb().y == y)
-					return;
-			}
-			
+			//check if a bomb it's not already there
+			if ((*bombIterator)->GetBomb().x == x && (*bombIterator)->GetBomb().y == y)
+				return;
 		}
 		//if we find an empty place or a bomb it's not already there place the bomb
-		if (index != -1)
+		currentNumberOfBombs++;
+		totalNumberOfBombs++;
+
+		bombs.push_front(new Bomb(x, y, mBombPower));
+		Map::SetTileType(x, y, TileType::BOMB);
+
+		for (int i = 0; i < numberOfPlayers; ++i)
 		{
-			currentNumberOfBombs++;
-			totalNumberOfBombs++;
-			bomb[index] = new Bomb(x, y,mBombPower);
-			Map::SetTileType(x, y, TileType::BOMB);
-			for (int i = 0; i < numberOfPlayers; ++i)
-			{
-				bomb[index]->set[i] = 0;
-			}
-			Collision::AddCollisionOnMap(Map::bombTiles, bomb[index]->GetBomb().x, bomb[index]->GetBomb().y, TileType::BOMB);
+			(*bombs.begin())->set[i] = 0;
 		}
+		Collision::AddCollisionOnMap(Map::bombTiles, x, y, TileType::BOMB);
+
 	}
 }
 

@@ -41,7 +41,7 @@ private:
 
 	//timer part of the bomb
 	Uint32 startTime;
-	int mTimeToExplode = 10000;
+	int mTimeToExplode = 2000;
 	int mTimeToDestroyAfterExplosion = 500;
 
 	//proprietes

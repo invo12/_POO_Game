@@ -30,7 +30,7 @@ public:
 	void PlaceBomb();
 
 	//array of bombs
-	static Bomb* bomb[20];
+	static list<Bomb*> bombs;
 	static int totalNumberOfBombs;
 	
 	//has player died yet?
