@@ -19,11 +19,10 @@ public:
 	void Render();			//rendering method
 	void Clean();			//Clear the desktop
 
-	bool Running() { return isRunning; }
-	static SDL_Renderer *renderer;
+	bool Running() { return isRunning; }	//is game still running?
+	static SDL_Renderer *renderer;			//renderer
 
-private:
-	int count;
-	bool isRunning;
+private:		
+	bool isRunning;		
 	SDL_Window *window;
 };

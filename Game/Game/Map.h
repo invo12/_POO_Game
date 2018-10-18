@@ -16,6 +16,7 @@ public:
 
 	static list<Tile*> collisionTiles;
 	static list<Tile*> explosionTiles;
+	static list<Tile*> bombTiles;
 	static int totalMapCollisionTiles;
 	static TileType GetTileType(int x, int y) 
 	{

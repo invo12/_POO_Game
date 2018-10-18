@@ -4,6 +4,7 @@
 
 bool Collision::checkCollisions(SDL_Rect a, SDL_Rect b)
 {
+	//edges
 	int aLeft, bLeft;
 	int aRight, bRight;
 	int aTop, bTop;
@@ -43,43 +44,47 @@ bool Collision::checkCollisions(SDL_Rect a, SDL_Rect b)
 	return true;
 }
 
+//chcek if player is touching something 
+bool Collision::touchCollisionTile(SDL_Rect playerCollider, list<Tile*> tiles, list<SDL_Rect> ignoredCollisions)
+{
+	int i = 0;
+	list<Tile*>::iterator itT;
+	list<SDL_Rect>::iterator itR;
+	bool isIgnored;
+	bool interactWithSolidBomb = false;
+	for (itT = tiles.begin(); itT != tiles.end(); ++itT)
+	{
+		isIgnored = false;
+		if (checkCollisions(playerCollider, (*itT)->getCollider()))
+		{
+			for (itR = ignoredCollisions.begin(); itR != ignoredCollisions.end(); ++itR)
+			{
+				
+				if ((*itR).x == (*itT)->getCollider().x && (*itR).y == (*itT)->getCollider().y)
+				{
+					isIgnored = true;
+				}
+			}
+			if (!isIgnored)
+			{
+				interactWithSolidBomb = true;
+			}
+		}
+	}
+	if ((ignoredCollisions.empty() && !tiles.empty() && interactWithSolidBomb) || interactWithSolidBomb)
+		return true;
+	return false;
+}
+
 bool Collision::touchCollisionTile(SDL_Rect playerCollider, list<Tile*> tiles)
 {
 	list<Tile*>::iterator it;
+	//if player collides with something then stop him
 	for (it = tiles.begin(); it != tiles.end(); ++it)
 	{
 		if (checkCollisions(playerCollider, (*it)->getCollider()))
 		{
 			return true;
-		}
-	}
-
-	return false;
-}
-
-bool Collision::touchCollisionTile(SDL_Rect playerCollider, list<SDL_Rect> bombs, SDL_Rect* currentBomb)
-{
-	list<SDL_Rect>::iterator it;
-	if (currentBomb != nullptr)
-	{
-		for (it = bombs.begin(); it != bombs.end(); ++it)
-		{
-			if (!SDL_RectEquals(currentBomb, &(*it)) && checkCollisions(playerCollider, (*it)))
-			{
-				return true;
-			}
-		}
-	}
-	else
-	{
-		for (it = bombs.begin(); it != bombs.end(); ++it)
-		{
-			if (abs(playerCollider.x - (*it).x) < 60 && (abs(playerCollider.y - (*it).y) < 60))
-				return false;
-			if ( checkCollisions(playerCollider, (*it)))
-			{
-				return true;
-			}
 		}
 	}
 	return false;
@@ -88,6 +93,7 @@ bool Collision::touchCollisionTile(SDL_Rect playerCollider, list<SDL_Rect> bombs
 void Collision::RemoveCollisionFromMap(list<Tile*> &tiles,int xPos,int yPos)
 {
 	list<Tile*>::iterator it;
+	//remove collision from x and y coordinates and put grass there
 	for (it = tiles.begin(); it != tiles.end(); ++it)
 	{
 		if ((*it)->getCollider().x == xPos && (*it)->getCollider().y == yPos)
@@ -101,6 +107,7 @@ void Collision::RemoveCollisionFromMap(list<Tile*> &tiles,int xPos,int yPos)
 	}
 }
 
+//add collision to a certain list
 void Collision::AddCollisionOnMap(list<Tile*> &tiles, int xPos, int yPos,TileType type)
 {
 	tiles.push_front(new Tile(xPos, yPos, type));

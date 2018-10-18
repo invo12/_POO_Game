@@ -38,6 +38,7 @@ Map::Map()
 int Map::totalMapCollisionTiles = 0;
 list<Tile*> Map::collisionTiles{};
 list<Tile*> Map::explosionTiles{};
+list<Tile*> Map::bombTiles{};
 
 void Map::LoadMap(int mapMatrix[13][17])
 {
@@ -75,9 +76,6 @@ void Map::DrawMap()
 				TextureManager::Draw(mDestroyableBlock, src, dest);
 				break;
 			case TileType::WALL:
-				TextureManager::Draw(mWall, src, dest);
-				break;
-			case TileType::EXPLOSION:
 				TextureManager::Draw(mWall, src, dest);
 				break;
 			default:

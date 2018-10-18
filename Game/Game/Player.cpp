@@ -4,11 +4,12 @@
 #include "Collision.h"
 #include <math.h>
 #include <iostream>
+#include <list>
 
 using namespace std;
 
 Bomb* Player::bomb[20] = { nullptr };
-int Player::totalNumberOfBombs;
+int Player::totalNumberOfBombs = 0;
 int Player::numberOfPlayers = 0;
 Player* Player::players[2] = {nullptr};
 
@@ -35,7 +36,7 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 	//PROPRIETEEEES
 	//initialize the player number of bombs
 	currentNumberOfBombs = 0;
-	totalNumberOfBombs = 3;
+	maxNumberOfBombs = 1;
 	mBombPower = 2;
 
 	//get the texture dimensions from the file
@@ -52,6 +53,9 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 	this->leftKey = leftKey;
 	this->rightKey = rightKey;
 	this->bombKey = bombKey;
+
+	playerNumber = numberOfPlayers-1;
+	cout << playerNumber;
 }
 
 Player::~Player()
@@ -118,8 +122,8 @@ void Player::Move()
 
 	//keep player on the screen
 	if ((posX < GameConstants::tileWidth) || (posX + playerWidth > (GameConstants::screenWidth - GameConstants::tileWidth))
-		|| Collision::touchCollisionTile(playerCollider, Map::collisionTiles) 
-		|| (!Bomb::notSolidBombs.empty() && Collision::touchCollisionTile(playerCollider,Bomb::notSolidBombs,currentBomb == nullptr ? nullptr:&currentBomb->GetBomb())))// || touchCollisionTile(boxCollider,test))
+		|| Collision::touchCollisionTile(playerCollider, Map::collisionTiles)
+		|| Collision::touchCollisionTile(playerCollider, Map::bombTiles, ignoredCollisions))// || touchCollisionTile(boxCollider,test))
 	{
 		//don't move
 		posX -= velX;
@@ -133,7 +137,7 @@ void Player::Move()
 	//again,keep player on the screen
 	if ((posY < GameConstants::tileHeight) || (posY + playerHeight > (GameConstants::screenHeight - GameConstants::tileHeight)) 
 		|| Collision::touchCollisionTile(playerCollider, Map::collisionTiles) 
-		|| (!Bomb::notSolidBombs.empty() && Collision::touchCollisionTile(playerCollider, Bomb::notSolidBombs, currentBomb == nullptr ? nullptr : &currentBomb->GetBomb())))// || touchCollisionTile(boxCollider, test))
+		|| Collision::touchCollisionTile(playerCollider,Map::bombTiles,ignoredCollisions))// || touchCollisionTile(boxCollider, test))
 	{
 		//if (Map::GetTileType(posX, posY) == TileType::EXPLOSION)
 		//	die = true;
@@ -154,39 +158,39 @@ void Player::Update()
 		if (bomb[i] != nullptr)
 		{
 			bomb[i]->Update();
+
+			if (bomb[i]->set[playerNumber] == 0 && abs(players[playerNumber]->posX - bomb[i]->GetBomb().x) < 60 && abs(players[playerNumber]->posY - bomb[i]->GetBomb().y) < 60)
+			{
+				bomb[i]->set[playerNumber] = 1;
+				ignoredCollisions.push_front(bomb[i]->GetBomb());
+			}
+			if (bomb[i]->set[playerNumber] != 2 && ((abs(bomb[i]->GetBomb().x - players[playerNumber]->posX) > GameConstants::tileWidth - 1) || (abs(bomb[i]->GetBomb().y - players[playerNumber]->posY) > GameConstants::tileHeight - 1)))
+			{
+				if (!players[playerNumber]->ignoredCollisions.empty())
+				{
+					list<SDL_Rect>::iterator it;
+					for (it = ignoredCollisions.begin(); it != ignoredCollisions.end(); ++it)
+					{
+						if (SDL_RectEquals(&(*it), &bomb[i]->GetBomb()))
+						{
+							cout << "removed\n";
+							ignoredCollisions.erase(it);
+							break;
+						}
+					}
+					bomb[i]->set[playerNumber] = 2;
+				}
+			}
+
 			if (bomb[i]->destroy)
 			{
-				if (bomb[i]->solid)
-				{
-					Collision::RemoveCollisionFromMap(Map::collisionTiles, bomb[i]->GetBombCollider().x, bomb[i]->GetBombCollider().y);
-				}
+				Collision::RemoveCollisionFromMap(Map::bombTiles, bomb[i]->GetBomb().x, bomb[i]->GetBomb().y);
 				delete bomb[i];
 				bomb[i] = nullptr;
 				currentNumberOfBombs--;
 			}
 		}
 	}
-	if (currentBomb != nullptr && ((abs(currentBomb->GetBomb().x - posX) > GameConstants::tileWidth - 4) || (abs(currentBomb->GetBomb().y - posY) > GameConstants::tileHeight - 4)))
-	{
-		bool found = false;
-		for (int j = 0; j < numberOfPlayers; ++j)
-		{
-			if (players[j] != this && ((abs(currentBomb->GetBomb().x - players[j]->posX) < GameConstants::tileWidth - 4) && (abs(currentBomb->GetBomb().y - players[j]->posY) < GameConstants::tileHeight - 4)))
-			{
-				cout << abs(currentBomb->GetBomb().x - players[j]->posX) << ' ' << abs(currentBomb->GetBomb().y - players[j]->posY) << endl;
-				players[j]->currentBomb = currentBomb;
-				found = true;
-			}
-		}
-		if (!found)
-		{
-			RemoveSolidBombFromList(currentBomb->GetBomb());
-			currentBomb->MakeBombSolid();
-			Collision::AddCollisionOnMap(Map::collisionTiles, currentBomb->GetBombCollider().x, currentBomb->GetBombCollider().y, TileType::BOMB);
-		}
-		currentBomb = nullptr;
-	}
-
 	if (Collision::touchCollisionTile(playerCollider, Map::explosionTiles))
 	{
 		die = true;
@@ -220,10 +224,11 @@ void Player::PlaceBomb()
 	int y = playerCollider.y + playerCollider.h / 2;
 	y = y - y % GameConstants::tileHeight;
 
+	cout << currentNumberOfBombs << ' ';
 	//if we haven't already placed all bombs
-	if (currentNumberOfBombs < totalNumberOfBombs)
+	if (currentNumberOfBombs < maxNumberOfBombs)
 	{
-		for (int i = 0; i < totalNumberOfBombs; ++i)
+		for (int i = 0; i < maxNumberOfBombs; ++i)
 		{
 			//check if it's an empty place
 			if (index == -1 && bomb[i] == nullptr)
@@ -241,11 +246,15 @@ void Player::PlaceBomb()
 		//if we find an empty place or a bomb it's not already there place the bomb
 		if (index != -1)
 		{
+			currentNumberOfBombs++;
+			totalNumberOfBombs++;
 			bomb[index] = new Bomb(x, y,mBombPower);
 			Map::SetTileType(x, y, TileType::BOMB);
-			currentNumberOfBombs++;
-			currentBomb = bomb[index];
-			AddNotSolidBombOnList(currentBomb->GetBomb());
+			for (int i = 0; i < numberOfPlayers; ++i)
+			{
+				bomb[index]->set[i] = 0;
+			}
+			Collision::AddCollisionOnMap(Map::bombTiles, bomb[index]->GetBomb().x, bomb[index]->GetBomb().y, TileType::BOMB);
 		}
 	}
 }
@@ -253,5 +262,6 @@ void Player::PlaceBomb()
 void DeletePlayer(Player* &player)
 {
 	delete player;
+	Player::numberOfPlayers--;
 	player = nullptr;
 }

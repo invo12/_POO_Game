@@ -7,31 +7,30 @@ class Bomb
 {
 public:
 
+	//load textures function
 	static void Init();
 	//constructor and deconstructor
 	Bomb(int x,int y,int bombPower);
 	~Bomb();
+
+	//basic functions
 	void Update();
 	void Render();
 	
 	//has bomb exploded?
 	bool explode = false;
 	bool destroy = false;
-	bool solid = false;
 
 	//get the position of the bomb
 	SDL_Rect GetBomb();
-	SDL_Rect GetBombCollider();
 
+	//methods that make the bombs to explode imediatly
 	void Explode();
-	void MakeBombSolid();
 	void SetTimerToExplosion();
 
-	//not solid bombs
-	static list<SDL_Rect> notSolidBombs;
+	bool ignored = false;
+	int set[3] = { 0 };
 private:
-	//collider of the bomb
-	SDL_Rect mBombCollider;
 
 	//rendering part
 	SDL_Rect src, dest;
@@ -57,9 +56,14 @@ private:
 
 };
 
+//reset dest rectangle
 void setDestination(SDL_Rect &dest, int x, int y);
+
+//get max distance in one direction that the bomb can explode
 void GetMaxDistanceInDirection(int &maxDistance, int bombPower, int xPos, int yPos, int xSign, int ySign);
+
+//force the bomb from x,y coordinates to explode
 void ForceExplosion(int xPos,int yPos);
+
+//remove all the explosion colliders created by the bomb
 void RemoveExplosionColliders(int maxDistance, int xPos, int yPos, int xSign, int ySign);
-void AddNotSolidBombOnList(SDL_Rect bomb);
-void RemoveSolidBombFromList(SDL_Rect bomb);
