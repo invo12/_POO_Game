@@ -86,8 +86,28 @@ void Map::DrawMap()
 	}
 }
 
-void Map::DestroyBlock(int x, int y)
+PowerUpType Map::DestroyBlock(int x, int y)
 {
 	map[y / GameConstants::tileHeight][x / GameConstants::tileWidth] = static_cast<int>(TileType::GRASS);
 	Collision::RemoveCollisionFromMap(collisionTiles, x, y);
+	int r = rand() % 100;
+	if (r < GameConstants::chanceForExtraBomb)
+	{
+		cout << "BOMB";
+		return PowerUpType::BOMB;
+	}
+	else if (r < GameConstants::chanceForExtraFire)
+	{
+		cout << "FIRE";
+		return PowerUpType::FIRE;
+	}
+	else if (r < GameConstants::chanceForExtraSpeed)
+	{
+		cout << "SPEED";
+		return PowerUpType::SPEED;
+	}
+	else
+	{
+		return PowerUpType::NOTHING;
+	}
 }

@@ -8,7 +8,8 @@ enum class TileType
 	WALL = 1,
 	DESTROYABLEBLOCK = 2,
 	BOMB = 3,
-	EXPLOSION = 4
+	EXPLOSION = 4,
+	POWERUP = 5
 };
 
 class Tile

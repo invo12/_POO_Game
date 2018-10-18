@@ -12,6 +12,7 @@ list<Bomb*> Player::bombs{};
 int Player::totalNumberOfBombs = 0;
 int Player::numberOfPlayers = 0;
 Player* Player::players[2] = {nullptr};
+list<PowerUp*> Player::powerUps{};
 
 Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKey, unsigned int downKey, unsigned int leftKey, unsigned int rightKey,unsigned int bombKey)
 {
@@ -55,7 +56,7 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 	this->bombKey = bombKey;
 
 	playerNumber = numberOfPlayers-1;
-	cout << playerNumber;
+	playerVelocity = 2;
 }
 
 Player::~Player()
@@ -169,7 +170,6 @@ void Player::Update()
 			{
 				if (SDL_RectEquals(&(*it), &(*bombIterator)->GetBomb()))
 				{
-					cout << "removed\n";
 					ignoredCollisions.erase(it);
 					break;
 				}
@@ -179,12 +179,39 @@ void Player::Update()
 		if ((*bombIterator)->destroy)
 		{
 			Collision::RemoveCollisionFromMap(Map::bombTiles, (*bombIterator)->GetBomb().x, (*bombIterator)->GetBomb().y);
+			delete *bombIterator;
 			bombs.remove(*bombIterator);
 			currentNumberOfBombs--;
 			break;
 		}
 
 	}
+
+	list<PowerUp*>::iterator powerUpsIterator;
+
+	for (powerUpsIterator = powerUps.begin(); powerUpsIterator != powerUps.end(); ++powerUpsIterator)
+	{
+		bool destroy = (*powerUpsIterator)->Update();
+		if (destroy)
+		{
+			if ((*powerUpsIterator)->mType == PowerUpType::BOMB)
+			{
+				maxNumberOfBombs++;
+			}
+			else if ((*powerUpsIterator)->mType == PowerUpType::FIRE)
+			{
+				mBombPower++;
+			}
+			else if ((*powerUpsIterator)->mType == PowerUpType::SPEED)
+			{
+				playerVelocity+=0.25;
+			}
+			delete (*powerUpsIterator);
+			powerUps.erase(powerUpsIterator);
+			break;
+		}
+	}
+
 	if (Collision::touchCollisionTile(playerCollider, Map::explosionTiles))
 	{
 		die = true;
@@ -216,8 +243,6 @@ void Player::PlaceBomb()
 	int y = playerCollider.y + playerCollider.h / 2;
 	y = y - y % GameConstants::tileHeight;
 
-	cout << currentNumberOfBombs << ' ';
-
 	list<Bomb*>::iterator bombIterator;
 	//if we haven't already placed all bombs
 	if (currentNumberOfBombs < maxNumberOfBombs)
@@ -242,6 +267,11 @@ void Player::PlaceBomb()
 		Collision::AddCollisionOnMap(Map::bombTiles, x, y, TileType::BOMB);
 
 	}
+}
+
+SDL_Rect Player::GetCollider()
+{
+	return playerCollider;
 }
 
 void DeletePlayer(Player* &player)

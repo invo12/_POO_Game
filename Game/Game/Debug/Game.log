@@ -1,2 +1,10 @@
 ﻿  Player.cpp
+d:\facultate\poo giooooooc\game\game\player.cpp(75): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(79): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(83): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(87): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(96): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(100): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(104): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(108): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
   Game.vcxproj -> D:\facultate\POO GIOOOOOOC\Game\Debug\Game.exe

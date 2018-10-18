@@ -1,5 +1,6 @@
 #pragma once
 #include "Game.h"
+#include "PowerUp.h"
 #include <iostream>
 #include <list>
 using namespace std;
@@ -26,7 +27,7 @@ public:
 	{
 		map[y / GameConstants::tileHeight][x / GameConstants::tileWidth] = static_cast<int>(type);
 	}
-	static void DestroyBlock(int x,int y);
+	static PowerUpType DestroyBlock(int x,int y);
 private:
 
 	SDL_Rect src, dest;

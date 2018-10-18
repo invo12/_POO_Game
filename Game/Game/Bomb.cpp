@@ -183,7 +183,16 @@ void GetMaxDistanceInDirection(int &maxDistance,int bombPower,int xPos,int yPos,
 		{
 			Map::SetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::EXPLOSION);
 			maxDistance++;
-			Map::DestroyBlock(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
+			PowerUpType powerUpType = Map::DestroyBlock(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
+			if (powerUpType != PowerUpType::NOTHING)
+			{
+				SDL_Rect collider;
+				collider.x = xPos + (i + 1) * GameConstants::tileWidth * xSign;
+				collider.y = yPos + (i + 1) * GameConstants::tileHeight * ySign;
+				collider.w = GameConstants::tileWidth;
+				collider.h = GameConstants::tileHeight;
+				Player::powerUps.push_front(new PowerUp(powerUpType, collider));
+			}
 			break;
 		}
 		//if it's other bomb it should explode

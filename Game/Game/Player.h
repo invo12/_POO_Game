@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Map.h"
 #include "Bomb.h"
+#include "PowerUp.h"
 class Player
 {
 public:
@@ -9,8 +10,6 @@ public:
 	static const int playerWidth = GameConstants::tileWidth;
 	static const int playerHeight = GameConstants::tileHeight;
 
-	//max velocity of the player
-	static const int playerVelocity = 2;
 
 	//constructor
 	Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKey, unsigned int downKey, unsigned int leftKey, unsigned int rightKey,unsigned int bombKey);
@@ -43,8 +42,12 @@ public:
 	unsigned int rightKey;
 	unsigned int bombKey;
 
+	//keep track of all the players in the game
 	static int numberOfPlayers;
+	static Player* players[2];
 
+	SDL_Rect GetCollider();
+	static list<PowerUp*> powerUps;
 private:
 	//positions of the player
 	int posX,posY;
@@ -65,8 +68,7 @@ private:
 	//proprietes of the player
 	int mBombPower;
 	int maxNumberOfBombs;
-	//keep track of all the players in the game
-	static Player* players[2];
+	float playerVelocity;
 
 	//the collisions that should be ignored by the player
 	int numberOfIgnoredCollisions;
