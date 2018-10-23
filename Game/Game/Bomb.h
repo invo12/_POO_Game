@@ -1,7 +1,6 @@
 #pragma once
 #include "TextureManager.h"
 #include "GameConstants.h"
-#include "Game.h"
 
 class Bomb
 {
@@ -10,25 +9,23 @@ public:
 	//load textures function
 	static void Init();
 	//constructor and deconstructor
-	Bomb(int x,int y,int bombPower);
+	Bomb(int x,int y,int bombPower,int playerNumber);
 	~Bomb();
 
 	//basic functions
-	void Update();
+	bool Update();
 	void Render();
-	
-	//has bomb exploded?
-	bool explode = false;
-	bool destroy = false;
 
 	//get the position of the bomb
 	SDL_Rect GetBomb();
 
+	bool HasBombExploded();
+
 	//methods that make the bombs to explode imediatly
-	void Explode();
 	void SetTimerToExplosion();
 
-	bool ignored = false;
+	int GetParent();
+	//set is 2 if player should not ignore it
 	int set[3] = { 0 };
 private:
 
@@ -40,7 +37,7 @@ private:
 	static SDL_Texture* mExplosionRightTexture;
 
 	//timer part of the bomb
-	Uint32 startTime;
+	Uint32 mStartTime;
 	int mTimeToExplode = 2000;
 	int mTimeToDestroyAfterExplosion = 600;
 
@@ -54,6 +51,12 @@ private:
 	//positions
 	int xPos, yPos;
 
+	//has bomb exploded?
+	bool explode = false;
+	bool destroy = false;
+	void Explode();
+	bool ignored = false;
+	int mParentPlayer;
 };
 
 //reset dest rectangle

@@ -1,5 +1,5 @@
 #pragma once
-#include "Game.h"
+#include "SDL_image.h"
 
 enum class PowerUpType
 {
@@ -12,10 +12,20 @@ enum class PowerUpType
 class PowerUp
 {
 public:
+	static void Init();
 	PowerUp(PowerUpType powerType, SDL_Rect collider);
 	~PowerUp();
-	bool Update();
+	int Update();
 	PowerUpType mType;
+	void Render();
+
 private:
 	SDL_Rect mCollider;
+
+	//rendering
+	SDL_Rect mSrc, mDest;
+
+	static SDL_Texture* speedTexture;
+	static SDL_Texture* bombTexture;
+	static SDL_Texture* fireTexture;
 };

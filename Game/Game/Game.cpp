@@ -1,13 +1,16 @@
 #include "Game.h"
 #include "TextureManager.h"
 #include "Player.h"
+#include "Collision.h"
 using namespace std;
 
-Player* player = nullptr;
-Player* player2 = nullptr;
+Player* players[2]{ nullptr };
 
 SDL_Renderer* Game::renderer = nullptr;
 Map* map;
+list<Bomb*> Game::bombs{};
+int Game::totalNumberOfBombs;
+list<PowerUp*> Game::powerUps{};
 
 //constructor
 Game::Game()
@@ -44,10 +47,11 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 		isRunning = false;
 	}
 
-	player = new Player("Assets/circle.png",GameConstants::tileWidth, GameConstants::tileHeight,SDLK_UP,SDLK_DOWN,SDLK_LEFT,SDLK_RIGHT,SDLK_SPACE);
-	player2 = new Player("Assets/circle.png", GameConstants::tileWidth, GameConstants::tileHeight, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_q);
+	players[0] = new Player("Assets/circle.png",GameConstants::tileWidth, GameConstants::tileHeight,SDLK_UP,SDLK_DOWN,SDLK_LEFT,SDLK_RIGHT,SDLK_SPACE);
+	players[1] = new Player("Assets/circle.png", GameConstants::tileWidth, GameConstants::tileHeight, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_q);
 	map = new Map();
 	Bomb::Init();
+	PowerUp::Init();
 }
 
 void Game::HandleEvents()
@@ -61,37 +65,97 @@ void Game::HandleEvents()
 		isRunning = false;
 		break;
 	}
-	if(player != nullptr)
-		player->HandleEvents(event);
-	if (player2 != nullptr)
-		player2->HandleEvents(event);
+	for (int i = 0; i < 2; ++i)
+	{
+		if (players[i] != nullptr)
+			players[i]->HandleEvents(event);
+	}
 }
 
 void Game::Update()
 {
-	if (player != nullptr)
+	for (int i = 0; i < 2; ++i)
 	{
-		player->Update();
-		if (player->die)
-			DeletePlayer(player);
+		if (players[i] != nullptr)
+		{
+			players[i]->Update();
+			if (players[i]->isDead())
+				DeletePlayer(players[i]);
+		}
 	}
-	if (player2 != nullptr)
+
+	//bombs
+	list<Bomb*>::iterator bombIterator;
+	for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
 	{
-		player2->Update();
-		if (player2->die)
-			DeletePlayer(player2);
+		if (!(*bombIterator)->Update())
+		{
+			for (int i = 0; i < 2; ++i)
+			{
+				if ((*bombIterator)->GetParent() == i && players[i] != nullptr)
+				{
+					players[i]->currentNumberOfBombs--;
+				}
+			}
+			Collision::RemoveCollisionFromMap(map->bombTiles, (*bombIterator)->GetBomb().x, (*bombIterator)->GetBomb().y);
+			delete *bombIterator;
+			bombs.remove(*bombIterator);
+			break;
+		}
+	}
+
+	//the powerUps
+	list<PowerUp*>::iterator powerUpIterator;
+	for (powerUpIterator = Game::powerUps.begin(); powerUpIterator != Game::powerUps.end(); ++powerUpIterator)
+	{
+		int destroy = (*powerUpIterator)->Update();
+		if (destroy != -1)
+		{
+			if ((*powerUpIterator)->mType == PowerUpType::BOMB)
+			{
+				players[destroy]->IncreaseNumberOfBombs();
+			}
+			else if ((*powerUpIterator)->mType == PowerUpType::FIRE)
+			{
+				players[destroy]->IncreaseFire();
+			}
+			else if ((*powerUpIterator)->mType == PowerUpType::SPEED)
+			{
+				players[destroy]->IncreaseSpeed();
+			}
+			delete (*powerUpIterator);
+			Game::powerUps.erase(powerUpIterator);
+			break;
+		}
 	}
 }
 
 void Game::Render()
 {
+	//clear the render
 	SDL_RenderClear(renderer);
+
+	//then render the map
 	map->DrawMap();
-	if (player != nullptr)
-		player->Render();
-	if (player2 != nullptr)
-		player2->Render();
-	//add stuff to render
+	//then the player
+	for (int i = 0; i < 2; ++i)
+		if (players[i] != nullptr)
+		{
+			players[i]->Render();
+		}
+	//bombs
+	list<Bomb*>::iterator bombIterator;
+	for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
+	{
+		(*bombIterator)->Render();
+	}
+	//the powerUps
+	list<PowerUp*>::iterator powerUpIterator;
+	for (powerUpIterator = powerUps.begin(); powerUpIterator != powerUps.end(); ++powerUpIterator)
+	{
+		(*powerUpIterator)->Render();
+	}
+	//and show all the results to the screen
 	SDL_RenderPresent(renderer);
 }
 

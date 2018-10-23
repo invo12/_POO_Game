@@ -4,22 +4,22 @@
 Tile::Tile(int x, int y, TileType tileType)
 {
 	//set the collider of the tile
-	tileCollider.x = x;
-	tileCollider.y = y;
-	tileCollider.w = GameConstants::tileWidth;
-	tileCollider.h = GameConstants::tileHeight;
+	mTileCollider.x = x;
+	mTileCollider.y = y;
+	mTileCollider.w = GameConstants::tileWidth;
+	mTileCollider.h = GameConstants::tileHeight;
 
 	//set the type of the tile
-	type = tileType;
+	mType = tileType;
 }
 
 TileType Tile::getType()
 {
-	return type;
+	return mType;
 }
 
 SDL_Rect Tile::getCollider()
 {
-	return tileCollider;
+	return mTileCollider;
 }
 

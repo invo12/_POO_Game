@@ -8,11 +8,8 @@
 
 using namespace std;
 
-list<Bomb*> Player::bombs{};
-int Player::totalNumberOfBombs = 0;
 int Player::numberOfPlayers = 0;
 Player* Player::players[2] = {nullptr};
-list<PowerUp*> Player::powerUps{};
 
 Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKey, unsigned int downKey, unsigned int leftKey, unsigned int rightKey,unsigned int bombKey)
 {
@@ -23,8 +20,8 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 	playerTexture = TextureManager::LoadTexture(playerTextureName);
 	
 	//set the collider
-	playerCollider.w = playerWidth;
-	playerCollider.h = playerHeight;
+	playerCollider.w = GameConstants::playerWidth;
+	playerCollider.h = GameConstants::playerHeight;
 
 	//Initialize the offsets
 	posX = xPos;
@@ -89,6 +86,11 @@ void Player::HandleEvents(SDL_Event& event)
 	}
 	else if (event.type == SDL_KEYUP && event.key.repeat == 0)
 	{
+		//place a bomb if release the space key
+		if (event.key.keysym.sym == bombKey)
+		{
+			PlaceBomb();
+		}
 		//Adjust the velocity
 		if (event.key.keysym.sym == upKey)
 		{
@@ -106,11 +108,6 @@ void Player::HandleEvents(SDL_Event& event)
 		{
 			velX -= playerVelocity;
 		}
-		//place a bomb if release the space key
-		if (event.key.keysym.sym == bombKey)
-		{
-			PlaceBomb();
-		}
 	}
 	Move();
 }
@@ -122,7 +119,7 @@ void Player::Move()
 	playerCollider.x = posX;
 
 	//keep player on the screen
-	if ((posX < GameConstants::tileWidth) || (posX + playerWidth > (GameConstants::screenWidth - GameConstants::tileWidth))
+	if ((posX < GameConstants::tileWidth) || (posX + GameConstants::playerWidth > (GameConstants::screenWidth - GameConstants::tileWidth))
 		|| Collision::touchCollisionTile(playerCollider, Map::collisionTiles)
 		|| Collision::touchCollisionTile(playerCollider, Map::bombTiles, ignoredCollisions))// || touchCollisionTile(boxCollider,test))
 	{
@@ -136,7 +133,7 @@ void Player::Move()
 	playerCollider.y = posY;
 
 	//again,keep player on the screen
-	if ((posY < GameConstants::tileHeight) || (posY + playerHeight > (GameConstants::screenHeight - GameConstants::tileHeight)) 
+	if ((posY < GameConstants::tileHeight) || (posY + GameConstants::playerHeight > (GameConstants::screenHeight - GameConstants::tileHeight)) 
 		|| Collision::touchCollisionTile(playerCollider, Map::collisionTiles) 
 		|| Collision::touchCollisionTile(playerCollider,Map::bombTiles,ignoredCollisions))// || touchCollisionTile(boxCollider, test))
 	{
@@ -155,9 +152,8 @@ void Player::Update()
 	destRect.y = posY;
 	list<Bomb*>::iterator bombIterator;
 
-	for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
+	for (bombIterator = Game::bombs.begin(); bombIterator != Game::bombs.end(); ++bombIterator)
 	{
-		(*bombIterator)->Update();
 		if ((*bombIterator)->set[playerNumber] == 0 && abs(posX - (*bombIterator)->GetBomb().x) < 60 && abs(posY - (*bombIterator)->GetBomb().y) < 60)
 		{
 			(*bombIterator)->set[playerNumber] = 1;
@@ -176,40 +172,6 @@ void Player::Update()
 			}
 			(*bombIterator)->set[playerNumber] = 2;
 		}
-		if ((*bombIterator)->destroy)
-		{
-			Collision::RemoveCollisionFromMap(Map::bombTiles, (*bombIterator)->GetBomb().x, (*bombIterator)->GetBomb().y);
-			delete *bombIterator;
-			bombs.remove(*bombIterator);
-			currentNumberOfBombs--;
-			break;
-		}
-
-	}
-
-	list<PowerUp*>::iterator powerUpsIterator;
-
-	for (powerUpsIterator = powerUps.begin(); powerUpsIterator != powerUps.end(); ++powerUpsIterator)
-	{
-		bool destroy = (*powerUpsIterator)->Update();
-		if (destroy)
-		{
-			if ((*powerUpsIterator)->mType == PowerUpType::BOMB)
-			{
-				maxNumberOfBombs++;
-			}
-			else if ((*powerUpsIterator)->mType == PowerUpType::FIRE)
-			{
-				mBombPower++;
-			}
-			else if ((*powerUpsIterator)->mType == PowerUpType::SPEED)
-			{
-				playerVelocity+=0.25;
-			}
-			delete (*powerUpsIterator);
-			powerUps.erase(powerUpsIterator);
-			break;
-		}
 	}
 
 	if (Collision::touchCollisionTile(playerCollider, Map::explosionTiles))
@@ -220,13 +182,7 @@ void Player::Update()
 
 void Player::Render()
 {
-	list<Bomb*>::iterator bombIterator;
-	//render each active bomb
-	for (bombIterator = bombs.begin();bombIterator != bombs.end();++bombIterator)
-	{
-		(*bombIterator)->Render();
-	}
-	//and the player
+	//render the player
 	SDL_RenderCopy(Game::renderer, playerTexture, &srcRect, &destRect);
 }
 
@@ -247,7 +203,7 @@ void Player::PlaceBomb()
 	//if we haven't already placed all bombs
 	if (currentNumberOfBombs < maxNumberOfBombs)
 	{
-		for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
+		for (bombIterator = Game::bombs.begin(); bombIterator != Game::bombs.end(); ++bombIterator)
 		{
 			//check if a bomb it's not already there
 			if ((*bombIterator)->GetBomb().x == x && (*bombIterator)->GetBomb().y == y)
@@ -255,14 +211,14 @@ void Player::PlaceBomb()
 		}
 		//if we find an empty place or a bomb it's not already there place the bomb
 		currentNumberOfBombs++;
-		totalNumberOfBombs++;
+		Game::totalNumberOfBombs++;
 
-		bombs.push_front(new Bomb(x, y, mBombPower));
+		Game::bombs.push_front(new Bomb(x, y, mBombPower,playerNumber));
 		Map::SetTileType(x, y, TileType::BOMB);
 
 		for (int i = 0; i < numberOfPlayers; ++i)
 		{
-			(*bombs.begin())->set[i] = 0;
+			(*Game::bombs.begin())->set[i] = 0;
 		}
 		Collision::AddCollisionOnMap(Map::bombTiles, x, y, TileType::BOMB);
 
@@ -279,4 +235,24 @@ void DeletePlayer(Player* &player)
 	delete player;
 	Player::numberOfPlayers--;
 	player = nullptr;
+}
+
+void Player::IncreaseNumberOfBombs()
+{
+	maxNumberOfBombs++;
+}
+
+void Player::IncreaseFire()
+{
+	mBombPower++;
+}
+
+void Player::IncreaseSpeed()
+{
+	playerVelocity += 0.25f;
+}
+
+bool Player::isDead()
+{	
+	return die;
 }

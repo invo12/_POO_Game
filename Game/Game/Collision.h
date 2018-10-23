@@ -1,5 +1,6 @@
 #pragma once
-#include "Game.h"
+#include "Tile.h"
+#include "SDL_image.h"
 #include <list>
 using namespace std;
 

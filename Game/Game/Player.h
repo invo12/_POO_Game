@@ -6,10 +6,6 @@
 class Player
 {
 public:
-	//dimensions of the player
-	static const int playerWidth = GameConstants::tileWidth;
-	static const int playerHeight = GameConstants::tileHeight;
-
 
 	//constructor
 	Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKey, unsigned int downKey, unsigned int leftKey, unsigned int rightKey,unsigned int bombKey);
@@ -25,32 +21,25 @@ public:
 	//show the player on the screen
 	void Render();
 
-	//method for placing the bomb
-	void PlaceBomb();
-
-	//array of bombs
-	static list<Bomb*> bombs;
-	static int totalNumberOfBombs;
-	
-	//has player died yet?
-	bool die = false;
-	
-	//codes for keys for customization
-	unsigned int upKey;
-	unsigned int downKey;
-	unsigned int leftKey;
-	unsigned int rightKey;
-	unsigned int bombKey;
-
 	//keep track of all the players in the game
 	static int numberOfPlayers;
 	static Player* players[2];
 
+	//get the collider of the player
 	SDL_Rect GetCollider();
-	static list<PowerUp*> powerUps;
+
+	//increase stats of the player
+	void IncreaseNumberOfBombs();
+	void IncreaseFire();
+	void IncreaseSpeed();
+
+	//BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM
+	int currentNumberOfBombs;
+
+	bool isDead();
 private:
 	//positions of the player
-	int posX,posY;
+	float posX,posY;
 
 	//The velocity of the player
 	int velX,velY;
@@ -62,9 +51,6 @@ private:
 	SDL_Texture* playerTexture;
 	SDL_Rect srcRect, destRect;
 
-	//BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM
-	int currentNumberOfBombs;
-
 	//proprietes of the player
 	int mBombPower;
 	int maxNumberOfBombs;
@@ -74,6 +60,19 @@ private:
 	int numberOfIgnoredCollisions;
 	list<SDL_Rect> ignoredCollisions{};
 	int playerNumber;
+
+	//method for placing the bomb
+	void PlaceBomb();
+
+	//codes for keys for customization
+	unsigned int upKey;
+	unsigned int downKey;
+	unsigned int leftKey;
+	unsigned int rightKey;
+	unsigned int bombKey;
+
+	//has player died yet?
+	bool die = false;
 };
 
 //method for getting rid of the player when he dies

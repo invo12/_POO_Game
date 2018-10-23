@@ -5,7 +5,10 @@
 #include "Tile.h"
 #include "Collision.h"
 #include "GameConstants.h"
+#include "PowerUp.h"
+#include "Bomb.h"
 #include <list>
+
 class Game
 {
 public:
@@ -22,6 +25,9 @@ public:
 	bool Running() { return isRunning; }	//is game still running?
 	static SDL_Renderer *renderer;			//renderer
 
+	static int totalNumberOfBombs;
+	static list<Bomb*> bombs;
+	static list<PowerUp*> powerUps;
 private:		
 	bool isRunning;		
 	SDL_Window *window;

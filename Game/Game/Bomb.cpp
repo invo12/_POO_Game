@@ -1,8 +1,10 @@
 #include "Bomb.h"
 #include "Map.h"
 #include "Player.h"
+#include "TextureManager.h"
 #include <iostream>
 using namespace std;
+
 SDL_Texture* Bomb::mBombTexture;
 SDL_Texture* Bomb::mExplosionTexture;
 SDL_Texture* Bomb::mExplosionUpTexture;
@@ -16,7 +18,7 @@ void Bomb::Init()
 	mExplosionRightTexture = TextureManager::LoadTexture("Assets/explosion_right.png");
 }
 
-Bomb::Bomb(int x,int y,int bombPower)
+Bomb::Bomb(int x,int y,int bombPower,int playerNumber)
 {
 	//cut the bomb from file
 	src.x = src.y = 0;
@@ -30,7 +32,7 @@ Bomb::Bomb(int x,int y,int bombPower)
 	dest.y = y;
 
 	//start the bomb timer
-	startTime = SDL_GetTicks();
+	mStartTime = SDL_GetTicks();
 	
 	//proprietes of the bomb
 	mBombPower = bombPower;
@@ -38,6 +40,8 @@ Bomb::Bomb(int x,int y,int bombPower)
 	//set the position of the bomb
 	xPos = x;
 	yPos = y;
+
+	mParentPlayer = playerNumber;
 }
 
 Bomb::~Bomb()
@@ -60,26 +64,27 @@ Bomb::~Bomb()
 	//remove both explosion colliders and bomb
 	Collision::RemoveCollisionFromMap(Map::bombTiles, xPos, yPos);
 	Collision::RemoveCollisionFromMap(Map::explosionTiles, xPos, yPos);
-	Player::totalNumberOfBombs--;
+	Game::totalNumberOfBombs--;
 }
 
-void Bomb::Update()
+bool Bomb::Update()
 {
 	//if time has run out then explode
-	if (!explode && SDL_GetTicks() - startTime > mTimeToExplode)
+	if (!explode && SDL_GetTicks() - mStartTime > mTimeToExplode)
 	{
 		explode = true;
 		Explode();
 	}
 	//after it explodes t\wait some time before cleaning the explosion
-	else if(explode && SDL_GetTicks() - startTime > mTimeToExplode + mTimeToDestroyAfterExplosion)
+	else if(explode && SDL_GetTicks() - mStartTime > mTimeToExplode + mTimeToDestroyAfterExplosion)
 	{
 		destroy = true;
 	}
+	return !destroy;
 }
 
 void Bomb::Render()
-{
+{	
 	//before the explosion draw a bomb
 	if (!explode)
 	{
@@ -191,7 +196,7 @@ void GetMaxDistanceInDirection(int &maxDistance,int bombPower,int xPos,int yPos,
 				collider.y = yPos + (i + 1) * GameConstants::tileHeight * ySign;
 				collider.w = GameConstants::tileWidth;
 				collider.h = GameConstants::tileHeight;
-				Player::powerUps.push_front(new PowerUp(powerUpType, collider));
+				Game::powerUps.push_front(new PowerUp(powerUpType, collider));
 			}
 			break;
 		}
@@ -216,18 +221,27 @@ void RemoveExplosionColliders(int maxDistance,int xPos,int yPos,int xSign,int yS
 //set the timer so the bomb immediatly explodes
 void Bomb::SetTimerToExplosion()
 {
-	startTime = SDL_GetTicks() - mTimeToExplode;
+	mStartTime = SDL_GetTicks() - mTimeToExplode;
 }
 
 //force the bomb found on x,y coordinates to explode
 void ForceExplosion(int xPos,int yPos)
 {
 	list<Bomb*>::iterator it;
-	for (it = Player::bombs.begin(); it != Player::bombs.end(); ++it)
+	for (it = Game::bombs.begin(); it != Game::bombs.end(); ++it)
 	{
-		if (!(*it)->explode && (*it)->GetBomb().x == xPos && (*it)->GetBomb().y == yPos)
+		if (!(*it)->HasBombExploded() && (*it)->GetBomb().x == xPos && (*it)->GetBomb().y == yPos)
 		{
 			(*it)->SetTimerToExplosion();
 		}
 	}
+}
+bool Bomb::HasBombExploded()
+{
+	return explode;
+}
+
+int Bomb::GetParent()
+{
+	return mParentPlayer;
 }

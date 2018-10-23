@@ -1,7 +1,6 @@
 #pragma once
 #include "SDL.h"
 
-
 enum class TileType
 {
 	GRASS = 0,
@@ -26,8 +25,8 @@ public:
 
 private:
 	//collider
-	SDL_Rect tileCollider;
+	SDL_Rect mTileCollider;
 
 	//type of the tile
-	TileType type;
+	TileType mType;
 };
