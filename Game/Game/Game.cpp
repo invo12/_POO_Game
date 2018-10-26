@@ -18,7 +18,9 @@ Game::Game()
 
 //deconstructor
 Game::~Game()
-{}
+{
+
+}
 
 void Game::Init(const char* title, int xPosition, int yPosition, int width, int height, bool fullScreen)
 {
@@ -165,6 +167,33 @@ void Game::Clean()
 	window = nullptr;
 	SDL_DestroyRenderer(renderer);
 	renderer = nullptr;
+	delete map;
+	map = nullptr;
+	ClearLists();
 	SDL_Quit();
 	cout << "Game finished";
+}
+
+void Game::ClearLists()
+{
+	if (!bombs.empty())
+	{
+		list<Bomb*>::iterator it;
+		for (it = bombs.begin(); it != bombs.end(); ++it)
+		{
+			delete(*it);
+			*it = nullptr;
+		}
+		bombs.clear();
+	}
+	if (!powerUps.empty())
+	{
+		list<PowerUp*>::iterator it;
+		for (it = powerUps.begin(); it != powerUps.end(); ++it)
+		{
+			delete *it;
+			*it = nullptr;
+		}
+		powerUps.clear();
+	}
 }

@@ -43,8 +43,8 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 	srcRect.x = 0;
 	srcRect.y = 0;
 
-	destRect.w = 64;
-	destRect.h = 64;
+	destRect.w = GameConstants::playerWidth;
+	destRect.h = GameConstants::playerHeight;
 
 	this->upKey = upKey;
 	this->downKey = downKey;
@@ -66,6 +66,11 @@ void Player::HandleEvents(SDL_Event& event)
 	//If a key was pressed
 	if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
 	{
+		//place a bomb if we press the place bomb key
+		if (event.key.keysym.sym == bombKey)
+		{
+			PlaceBomb();
+		}
 		//Adjust the velocity
 		if (event.key.keysym.sym == upKey)
 		{
@@ -86,11 +91,6 @@ void Player::HandleEvents(SDL_Event& event)
 	}
 	else if (event.type == SDL_KEYUP && event.key.repeat == 0)
 	{
-		//place a bomb if release the space key
-		if (event.key.keysym.sym == bombKey)
-		{
-			PlaceBomb();
-		}
 		//Adjust the velocity
 		if (event.key.keysym.sym == upKey)
 		{
@@ -249,7 +249,24 @@ void Player::IncreaseFire()
 
 void Player::IncreaseSpeed()
 {
-	playerVelocity += 0.25f;
+	float newPlayerVelocity = playerVelocity + 0.5f;
+	if (velX == (int)playerVelocity)
+	{
+		velX = newPlayerVelocity;
+	}
+	else if (velX == -(int)playerVelocity)
+	{
+		velX = -newPlayerVelocity;
+	}
+	if (velY == (int)playerVelocity)
+	{
+		velY = newPlayerVelocity;
+	}
+	else if (velY == -(int)playerVelocity)
+	{
+		velY = -newPlayerVelocity;
+	}
+	playerVelocity = newPlayerVelocity;
 }
 
 bool Player::isDead()

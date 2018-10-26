@@ -10,12 +10,21 @@ SDL_Texture* Bomb::mExplosionTexture;
 SDL_Texture* Bomb::mExplosionUpTexture;
 SDL_Texture* Bomb::mExplosionRightTexture;
 
+SDL_Texture* Bomb::mExplosionRightEndTexture;
+SDL_Texture* Bomb::mExplosionLeftEndTexture;
+SDL_Texture* Bomb::mExplosionUpEndTexture;
+SDL_Texture* Bomb::mExplosionDownEndTexture;
+
 void Bomb::Init()
 {
 	mBombTexture = TextureManager::LoadTexture("Assets/bomb.png");
 	mExplosionTexture = TextureManager::LoadTexture("Assets/explosion.png");
 	mExplosionUpTexture = TextureManager::LoadTexture("Assets/explosion_up.png");
 	mExplosionRightTexture = TextureManager::LoadTexture("Assets/explosion_right.png");
+	mExplosionRightEndTexture = TextureManager::LoadTexture("Assets/explosion_end_right.png");
+	mExplosionLeftEndTexture = TextureManager::LoadTexture("Assets/explosion_end_left.png");
+	mExplosionUpEndTexture = TextureManager::LoadTexture("Assets/explosion_end_up.png");
+	mExplosionDownEndTexture = TextureManager::LoadTexture("Assets/explosion_end_down.png");
 }
 
 Bomb::Bomb(int x,int y,int bombPower,int playerNumber)
@@ -98,6 +107,11 @@ void Bomb::Render()
 		for (int i = 0; i < mMaxUp; ++i)
 		{
 			dest.y -= GameConstants::tileHeight;
+			if (i == mMaxUp - 1)
+			{
+				TextureManager::Draw(mExplosionUpEndTexture, src, dest);
+				break;
+			}
 			TextureManager::Draw(mExplosionUpTexture, src, dest);
 		}
 
@@ -106,6 +120,11 @@ void Bomb::Render()
 		for (int i = 0; i < mMaxDown; ++i)
 		{
 			dest.y += GameConstants::tileHeight;
+			if (i == mMaxDown - 1)
+			{
+				TextureManager::Draw(mExplosionDownEndTexture, src, dest);
+				break;
+			}
 			TextureManager::Draw(mExplosionUpTexture, src, dest);
 		}
 
@@ -114,6 +133,11 @@ void Bomb::Render()
 		for (int i = 0; i < mMaxRight; ++i)
 		{
 			dest.x += GameConstants::tileWidth;
+			if (i == mMaxRight - 1)
+			{
+				TextureManager::Draw(mExplosionRightEndTexture, src, dest);
+				break;
+			}
 			TextureManager::Draw(mExplosionRightTexture, src, dest);
 		}
 
@@ -122,6 +146,11 @@ void Bomb::Render()
 		for (int i = 0; i < mMaxLeft; ++i)
 		{
 			dest.x -= GameConstants::tileWidth;
+			if (i == mMaxLeft - 1)
+			{
+				TextureManager::Draw(mExplosionLeftEndTexture, src, dest);
+				break;
+			}
 			TextureManager::Draw(mExplosionRightTexture, src, dest);
 		}
 	}
@@ -137,7 +166,6 @@ void Bomb::Explode()
 {
 	int xPos = dest.x;
 	int yPos = dest.y;
-	int temp;
 	//calculate how far should go the explosion in each direction
 
 	//up

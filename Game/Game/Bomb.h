@@ -35,6 +35,10 @@ private:
 	static SDL_Texture* mExplosionTexture;
 	static SDL_Texture* mExplosionUpTexture;
 	static SDL_Texture* mExplosionRightTexture;
+	static SDL_Texture* mExplosionRightEndTexture;
+	static SDL_Texture* mExplosionLeftEndTexture;
+	static SDL_Texture* mExplosionUpEndTexture;
+	static SDL_Texture* mExplosionDownEndTexture;
 
 	//timer part of the bomb
 	Uint32 mStartTime;

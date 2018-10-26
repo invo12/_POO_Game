@@ -34,7 +34,12 @@ Map::Map()
 	src.x = src.y = 0;
 	dest.x = dest.y = 0;
 }
-
+Map::~Map()
+{
+	ClearList(collisionTiles);
+	ClearList(explosionTiles);
+	ClearList(bombTiles);
+}
 int Map::totalMapCollisionTiles = 0;
 list<Tile*> Map::collisionTiles{};
 list<Tile*> Map::explosionTiles{};
@@ -109,5 +114,20 @@ PowerUpType Map::DestroyBlock(int x, int y)
 	else
 	{
 		return PowerUpType::NOTHING;
+	}
+}
+
+void Map::ClearList(list<Tile*> tiles)
+{
+	if (!tiles.empty())
+	{
+		list<Tile*>::iterator it;
+		for (it = tiles.begin(); it != tiles.end(); ++it)
+		{
+			delete(*it);
+			*it = nullptr;
+		}
+		tiles.clear();
+		cout << "\ntiles Cleared";
 	}
 }

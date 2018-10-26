@@ -8,8 +8,8 @@ public:
 	static const int tileWidth = 64;
 	static const int tileHeight = 64;
 
-	static const int playerWidth = 64;
-	static const int playerHeight = 64;
+	static const int playerWidth = 48;
+	static const int playerHeight = 48;
 
 	static const int chanceForExtraBomb = 10;	//10%
 	static const int chanceForExtraFire = 25;	//15%

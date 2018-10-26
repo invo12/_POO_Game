@@ -54,6 +54,7 @@ private:
 	//proprietes of the player
 	int mBombPower;
 	int maxNumberOfBombs;
+
 	float playerVelocity;
 
 	//the collisions that should be ignored by the player

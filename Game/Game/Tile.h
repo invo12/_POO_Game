@@ -1,6 +1,6 @@
 #pragma once
 #include "SDL.h"
-
+#include "GameConstants.h"
 enum class TileType
 {
 	GRASS = 0,
@@ -16,7 +16,6 @@ class Tile
 public:
 	//constructor
 	Tile(int x,int y,TileType tileType);
-	
 	//method for obtaining the type
 	TileType getType();
 
