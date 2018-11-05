@@ -2,12 +2,14 @@
 #include "TextureManager.h"
 #include "Player.h"
 #include "Collision.h"
+#include "Button.h"
 using namespace std;
 
 Player* players[2]{ nullptr };
 
 SDL_Renderer* Game::renderer = nullptr;
 Map* map;
+Button* button;
 list<Bomb*> Game::bombs{};
 int Game::totalNumberOfBombs;
 list<PowerUp*> Game::powerUps{};
@@ -49,11 +51,10 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 		isRunning = false;
 	}
 
-	players[0] = new Player("Assets/circle.png",GameConstants::tileWidth, GameConstants::tileHeight,SDLK_UP,SDLK_DOWN,SDLK_LEFT,SDLK_RIGHT,SDLK_SPACE);
-	players[1] = new Player("Assets/circle.png", GameConstants::tileWidth, GameConstants::tileHeight, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_q);
-	map = new Map();
+	InitOthers();
 	Bomb::Init();
 	PowerUp::Init();
+	button = new Button(200, 100, 200, 40);
 }
 
 void Game::HandleEvents()
@@ -72,10 +73,18 @@ void Game::HandleEvents()
 		if (players[i] != nullptr)
 			players[i]->HandleEvents(event);
 	}
+	button->Update(event);
 }
 
 void Game::Update()
 {
+	if (players[0] == nullptr && players[1] == nullptr)
+	{
+		cout << "DRAW";
+		ClearTheMap();
+		InitOthers();
+		return;
+	}
 	for (int i = 0; i < 2; ++i)
 	{
 		if (players[i] != nullptr)
@@ -83,9 +92,14 @@ void Game::Update()
 			players[i]->Update();
 			if (players[i]->isDead())
 				DeletePlayer(players[i]);
+			if (Player::numberOfPlayers == 1)
+			{
+				cout << "Player " << i << " won";
+				ClearTheMap();
+				InitOthers();
+			}
 		}
 	}
-
 	//bombs
 	list<Bomb*>::iterator bombIterator;
 	for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
@@ -158,6 +172,7 @@ void Game::Render()
 		(*powerUpIterator)->Render();
 	}
 	//and show all the results to the screen
+	button->Render();
 	SDL_RenderPresent(renderer);
 }
 
@@ -195,5 +210,24 @@ void Game::ClearLists()
 			*it = nullptr;
 		}
 		powerUps.clear();
+	}
+}
+
+void InitOthers()
+{
+	players[0] = new Player("Assets/circle.png", GameConstants::tileWidth, GameConstants::tileHeight, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE);
+	players[1] = new Player("Assets/circle.png", GameConstants::tileWidth, GameConstants::tileHeight, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_q);
+	map = new Map();
+}
+
+void Game::ClearTheMap()
+{
+	delete map;
+	map = nullptr;
+	ClearLists();
+	for (int i = 0; i < 2; ++i)
+	{
+		if (players[i] != nullptr)
+			DeletePlayer(players[i]);
 	}
 }

@@ -74,6 +74,7 @@ private:
 
 	//has player died yet?
 	bool die = false;
+	bool bUp, bDown, bLeft, bRight;
 };
 
 //method for getting rid of the player when he dies

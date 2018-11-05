@@ -29,6 +29,7 @@ int main(int argc, char*argv[])
 		{
 			SDL_Delay(frameDelay - frameTime);
 		}
+
 	}
 	//system("color 2");
 	game->Clean();

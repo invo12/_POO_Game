@@ -27,9 +27,14 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 	posX = xPos;
 	posY = yPos;
 
-	//Initialize the velocity
+	//initialize velocities
 	velX = 0;
 	velY = 0;
+	
+	bUp = false;
+	bDown = false;
+	bLeft = false;
+	bRight = false;
 
 	//PROPRIETEEEES
 	//initialize the player number of bombs
@@ -59,6 +64,7 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 Player::~Player()
 {
 	cout << "PlayerDIEEED";
+	numberOfPlayers--;
 }
 
 void Player::HandleEvents(SDL_Event& event)
@@ -75,36 +81,40 @@ void Player::HandleEvents(SDL_Event& event)
 		if (event.key.keysym.sym == upKey)
 		{
 			velY -= playerVelocity;
+			bUp = true;
 		}
 		else if (event.key.keysym.sym == downKey)
 		{
 			velY += playerVelocity;
+			bDown = true;
 		}
 		else if (event.key.keysym.sym == leftKey)
 		{
 			velX -= playerVelocity;
+			bLeft = true;
 		}
 		else if (event.key.keysym.sym == rightKey)
 		{
 			velX += playerVelocity;
+			bRight = true;
 		}
 	}
 	else if (event.type == SDL_KEYUP && event.key.repeat == 0)
 	{
 		//Adjust the velocity
-		if (event.key.keysym.sym == upKey)
+		if (event.key.keysym.sym == upKey && bUp)
 		{
 			velY += playerVelocity;
 		}
-		if (event.key.keysym.sym == downKey)
+		if (event.key.keysym.sym == downKey && bDown)
 		{
 			velY -= playerVelocity;
 		}
-		if (event.key.keysym.sym == leftKey)
+		if (event.key.keysym.sym == leftKey && bLeft)
 		{
 			velX += playerVelocity;
 		}
-		if (event.key.keysym.sym == rightKey)
+		if (event.key.keysym.sym == rightKey && bRight)
 		{
 			velX -= playerVelocity;
 		}
@@ -233,7 +243,6 @@ SDL_Rect Player::GetCollider()
 void DeletePlayer(Player* &player)
 {
 	delete player;
-	Player::numberOfPlayers--;
 	player = nullptr;
 }
 

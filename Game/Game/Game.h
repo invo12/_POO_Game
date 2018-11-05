@@ -32,4 +32,7 @@ private:
 	bool isRunning;		
 	SDL_Window *window;
 	void ClearLists();
+	void ClearTheMap();
 };
+
+void InitOthers();

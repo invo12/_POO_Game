@@ -47,6 +47,7 @@ list<Tile*> Map::bombTiles{};
 
 void Map::LoadMap(int mapMatrix[13][17])
 {
+	collisionTiles.clear();
 	int k = 0;
 	list<Tile*>::iterator it = collisionTiles.begin();
 	for (int i = 0; i < 13; i++)
@@ -58,7 +59,7 @@ void Map::LoadMap(int mapMatrix[13][17])
 			if (type == static_cast<int>(TileType::GRASS) || i == 0 || j == 0 || i == 12 || j == 16)	//if it's not grass or in the outer rectangle
 				continue;
 			collisionTiles.push_front(new Tile(j * GameConstants::tileWidth, i * GameConstants::tileHeight, static_cast<TileType>(type)));
-		}
+	}
 	}
 	totalMapCollisionTiles = k;									//save the total number of tiles
 }
@@ -121,13 +122,16 @@ void Map::ClearList(list<Tile*> tiles)
 {
 	if (!tiles.empty())
 	{
-		list<Tile*>::iterator it;
+		/*list<Tile*>::iterator it;
 		for (it = tiles.begin(); it != tiles.end(); ++it)
 		{
 			delete(*it);
 			*it = nullptr;
-		}
+			tiles.pop_front();
+			cout << "DA";
+		}*/
 		tiles.clear();
 		cout << "\ntiles Cleared";
+
 	}
 }
