@@ -118,19 +118,22 @@ PowerUpType Map::DestroyBlock(int x, int y)
 	}
 }
 
-void Map::ClearList(list<Tile*> tiles)
+void Map::ClearList(list<Tile*> &tiles)
 {
 	if (!tiles.empty())
 	{
-		/*list<Tile*>::iterator it;
-		for (it = tiles.begin(); it != tiles.end(); ++it)
+		list<Tile*>::iterator it;
+		it = tiles.begin();
+		while (it != tiles.end())
 		{
-			delete(*it);
-			*it = nullptr;
+			if (*it != nullptr)
+			{
+				delete(*it);
+				*it = nullptr;
+			}
 			tiles.pop_front();
-			cout << "DA";
-		}*/
-		tiles.clear();
+			it = tiles.begin();
+		}
 		cout << "\ntiles Cleared";
 
 	}

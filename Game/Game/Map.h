@@ -37,5 +37,5 @@ private:
 	SDL_Texture* mDestroyableBlock;
 
 	static int map[13][17];
-	void ClearList(list<Tile*> tiles);
+	void ClearList(list<Tile*> &tiles);
 };

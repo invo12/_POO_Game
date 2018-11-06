@@ -215,8 +215,8 @@ void Game::ClearLists()
 
 void InitOthers()
 {
-	players[0] = new Player("Assets/circle.png", GameConstants::tileWidth, GameConstants::tileHeight, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE);
-	players[1] = new Player("Assets/circle.png", GameConstants::tileWidth, GameConstants::tileHeight, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_q);
+	players[0] = new Player("Assets/circle.png", GameConstants::tileWidth + 5, GameConstants::tileHeight + 5, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE);
+	players[1] = new Player("Assets/circle.png",GameConstants::screenWidth - 2 * GameConstants::tileWidth - 5,GameConstants::screenHeight - 2 * GameConstants::tileHeight + 5, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_q);
 	map = new Map();
 }
 

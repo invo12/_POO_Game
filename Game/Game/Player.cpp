@@ -13,6 +13,10 @@ Player* Player::players[2] = {nullptr};
 
 Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKey, unsigned int downKey, unsigned int leftKey, unsigned int rightKey,unsigned int bombKey)
 {
+	//Initialize the offsets
+	playerCollider.x = posX = xPos;
+	playerCollider.y = posY = yPos;
+
 	players[numberOfPlayers] = this;
 	numberOfPlayers++;
 
@@ -22,10 +26,6 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 	//set the collider
 	playerCollider.w = GameConstants::playerWidth;
 	playerCollider.h = GameConstants::playerHeight;
-
-	//Initialize the offsets
-	posX = xPos;
-	posY = yPos;
 
 	//initialize velocities
 	velX = 0;

@@ -1,6 +1,8 @@
 ﻿  Player.cpp
-d:\facultate\poo giooooooc\game\game\player.cpp(27): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\facultate\poo giooooooc\game\game\player.cpp(28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(17): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(18): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(18): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 d:\facultate\poo giooooooc\game\game\player.cpp(83): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
 d:\facultate\poo giooooooc\game\game\player.cpp(88): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
 d:\facultate\poo giooooooc\game\game\player.cpp(93): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
