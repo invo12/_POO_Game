@@ -145,9 +145,12 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="ExitButton.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
+    <ClCompile Include="MenuElement.cpp" />
+    <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -157,9 +160,12 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="ExitButton.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="MenuElement.h" />
+    <ClInclude Include="Panel.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PowerUp.h" />
     <ClInclude Include="TextureManager.h" />

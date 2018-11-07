@@ -2,7 +2,7 @@
 #include "TextureManager.h"
 #include "Player.h"
 #include "Collision.h"
-#include "Button.h"
+#include "ExitButton.h"
 using namespace std;
 
 Player* players[2]{ nullptr };
@@ -54,7 +54,7 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 	InitOthers();
 	Bomb::Init();
 	PowerUp::Init();
-	button = new Button(200, 100, 200, 40);
+	button = new ExitButton(200, 100, 200, 40,this);
 }
 
 void Game::HandleEvents()
@@ -174,6 +174,11 @@ void Game::Render()
 	//and show all the results to the screen
 	button->Render();
 	SDL_RenderPresent(renderer);
+}
+
+void Game::Stop()
+{
+	isRunning = false;
 }
 
 void Game::Clean()

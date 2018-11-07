@@ -1,6 +1,7 @@
 #pragma once
 #include "SDL.h"
 #include "SDL_image.h"
+#include "MenuElement.h"
 
 enum class MouseButton
 {
@@ -10,18 +11,18 @@ enum class MouseButton
 	MOUSE_UP = 3,
 };
 
-class Button
+class Button:public MenuElement
 {
-private:
+protected:
 	int xPos, yPos;
 	int width, height;
 	bool hover;
 	SDL_Texture* buttonInactive;
 	SDL_Texture* buttonActive;
-	SDL_Rect src, dest;
 public:
 	Button(int x,int y,int w,int h);
-	void Render();
+	Button();
+	//void Render() override;
 	void Update(SDL_Event &event);
-	void OnPressedButton();
+	virtual void OnPressedButton();
 };

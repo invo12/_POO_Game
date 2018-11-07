@@ -17,15 +17,18 @@ Button::Button(int x,int y,int w,int h)
 	dest.h = height;
 	buttonActive = TextureManager::LoadTexture("Assets/wall.png");
 	buttonInactive = TextureManager::LoadTexture("Assets/grass.png");
+	texture = TextureManager::LoadTexture("Assets/wall.png");
 }
-
-void Button::Render()
+Button::Button()
 {
-	if (hover)
-		TextureManager::Draw(buttonActive, src, dest);
-	else
-		TextureManager::Draw(buttonInactive, src, dest);
 }
+//void Button::Render()
+//{
+//	if (hover)
+//		TextureManager::Draw(buttonActive, src, dest);
+//	else
+//		TextureManager::Draw(buttonInactive, src, dest);
+//}
 
 void Button::Update(SDL_Event &event)
 {
@@ -43,5 +46,5 @@ void Button::Update(SDL_Event &event)
 
 void Button::OnPressedButton()
 {
-	hover = !hover;	
+	active = !active;
 }

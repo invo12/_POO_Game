@@ -20,6 +20,7 @@ public:
 	void HandleEvents();	//handling events
 	void Update();			//update positions etc
 	void Render();			//rendering method
+	void Stop();
 	void Clean();			//Clear the desktop
 
 	bool Running() { return isRunning; }	//is game still running?

@@ -13,69 +13,117 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Menu">
+      <UniqueIdentifier>{67995aee-75c1-465c-9212-2849d18e1061}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Menu\Buttons">
+      <UniqueIdentifier>{f4fd81b2-3ea3-4dde-935f-805f071799a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Player">
+      <UniqueIdentifier>{85ca1758-fb9b-4f24-86e6-1f5971771383}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Others">
+      <UniqueIdentifier>{4d12ccdd-87be-41c7-993e-fe30196d5b15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Basic">
+      <UniqueIdentifier>{738eacd8-e6f9-43fa-a625-016928d29494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Menu">
+      <UniqueIdentifier>{0825ed92-c983-4260-8d19-ae57a1cb25e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Basic">
+      <UniqueIdentifier>{bdc8feaa-f4be-449c-bdb2-cc8a6a61f3cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{f9071355-88a7-4de7-983a-786a1bda70b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Others">
+      <UniqueIdentifier>{41b1f152-7601-4ab9-aac2-b0f9e5ad683f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Menu\Buttons">
+      <UniqueIdentifier>{e78924d2-6f95-4a10-a4a4-db665d8a59d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="MenuElement.cpp">
+      <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Source Files\Menu</Filter>
     </ClCompile>
     <ClCompile Include="map.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Basic</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Source Files\Basic</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Player</Filter>
     </ClCompile>
     <ClCompile Include="Collision.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Player</Filter>
     </ClCompile>
     <ClCompile Include="Bomb.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Others</Filter>
     </ClCompile>
     <ClCompile Include="PowerUp.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Others</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Menu\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="ExitButton.cpp">
+      <Filter>Source Files\Menu\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Basic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="MenuElement.h">
+      <Filter>Header Files\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameConstants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bomb.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PowerUp.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Panel.h">
+      <Filter>Header Files\Menu</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Menu\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Header Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerUp.h">
+      <Filter>Header Files\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="GameConstants.h">
+      <Filter>Header Files\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Header Files\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="ExitButton.h">
+      <Filter>Header Files\Menu\Buttons</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
