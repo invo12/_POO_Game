@@ -4,7 +4,6 @@
 class Panel :public MenuElement
 {
 public:
-	Panel();
-	void SetActive(bool active);
-
+	Panel(int x,int y,int w,int h, const char* textureName);
+	
 };

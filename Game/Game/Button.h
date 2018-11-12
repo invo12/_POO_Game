@@ -14,14 +14,16 @@ enum class MouseButton
 class Button:public MenuElement
 {
 protected:
-	int xPos, yPos;
-	int width, height;
-	bool hover;
+	bool pressed;
 	SDL_Texture* buttonInactive;
 	SDL_Texture* buttonActive;
 public:
-	Button(int x,int y,int w,int h);
+	Button(int x,int y,int w,int h, const char* textureName);
 	Button();
+	inline bool ButtonWasPressed()
+	{
+		return pressed;
+	}
 	//void Render() override;
 	void Update(SDL_Event &event);
 	virtual void OnPressedButton();

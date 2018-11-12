@@ -2,10 +2,10 @@
 #include "Button.h"
 #include "Game.h"
 
-class ExitButton :public Button
+class StartButton :public Button
 {
 public:
-	ExitButton(int x, int y, int w, int h, const char* textureName,Game* game);
+	StartButton(int x, int y, int w, int h, const char* textureName, Game* game);
 private:
 	void OnPressedButton() override;
 	Game* game;

@@ -78,6 +78,7 @@ Bomb::~Bomb()
 
 bool Bomb::Update()
 {
+	mCurrentTime = SDL_GetTicks() - mStartTime;
 	//if time has run out then explode
 	if (!explode && SDL_GetTicks() - mStartTime > mTimeToExplode)
 	{
@@ -272,4 +273,9 @@ bool Bomb::HasBombExploded()
 int Bomb::GetParent()
 {
 	return mParentPlayer;
+}
+
+void Bomb::ResumeTimer()
+{
+	mStartTime = SDL_GetTicks() - mCurrentTime;
 }

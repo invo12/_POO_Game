@@ -23,6 +23,7 @@ public:
 
 	//methods that make the bombs to explode imediatly
 	void SetTimerToExplosion();
+	void ResumeTimer();
 
 	int GetParent();
 	//set is 2 if player should not ignore it
@@ -43,6 +44,7 @@ private:
 	//timer part of the bomb
 	Uint32 mStartTime;
 	int mTimeToExplode = 2000;
+	int mCurrentTime;
 	int mTimeToDestroyAfterExplosion = 600;
 
 	//proprietes

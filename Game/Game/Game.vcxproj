@@ -149,10 +149,13 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MenuElement.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PowerUp.cpp" />
+    <ClCompile Include="StartButton.cpp" />
+    <ClCompile Include="SwitchPanelsButton.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
@@ -164,10 +167,13 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuElement.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PowerUp.h" />
+    <ClInclude Include="StartButton.h" />
+    <ClInclude Include="SwitchPanelsButton.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tile.h" />
   </ItemGroup>

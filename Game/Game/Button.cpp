@@ -3,21 +3,19 @@
 #include <iostream>
 using namespace std;
 
-Button::Button(int x,int y,int w,int h)
+Button::Button(int x,int y,int w,int h,const char* textureName)
 {
 	xPos = x;
 	yPos = y;
 	width = w;
 	height = h;
-	src.x = src.y = 0;
-	src.w = src.h = 64;
 	dest.x = x;
 	dest.y = y;
 	dest.w = width;
 	dest.h = height;
 	buttonActive = TextureManager::LoadTexture("Assets/wall.png");
 	buttonInactive = TextureManager::LoadTexture("Assets/grass.png");
-	texture = TextureManager::LoadTexture("Assets/wall.png");
+	texture = TextureManager::LoadTexture(textureName);
 }
 Button::Button()
 {
@@ -32,6 +30,7 @@ Button::Button()
 
 void Button::Update(SDL_Event &event)
 {
+	pressed = false;
 	if (event.type == SDL_MOUSEBUTTONUP)
 	{
 		int x = event.button.x;

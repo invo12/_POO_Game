@@ -2,14 +2,15 @@
 #include "TextureManager.h"
 #include "Player.h"
 #include "Collision.h"
-#include "ExitButton.h"
+#include "Menu.h"
+
 using namespace std;
 
 Player* players[2]{ nullptr };
 
 SDL_Renderer* Game::renderer = nullptr;
 Map* map;
-Button* button;
+Uint32 Game::pauseTime;
 list<Bomb*> Game::bombs{};
 int Game::totalNumberOfBombs;
 list<PowerUp*> Game::powerUps{};
@@ -45,6 +46,7 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 		}
 
 		isRunning = true;
+		Pause();
 	}
 	else
 	{
@@ -54,7 +56,6 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 	InitOthers();
 	Bomb::Init();
 	PowerUp::Init();
-	button = new ExitButton(200, 100, 200, 40,this);
 }
 
 void Game::HandleEvents()
@@ -67,20 +68,25 @@ void Game::HandleEvents()
 	case SDL_QUIT:
 		isRunning = false;
 		break;
+	case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_ESCAPE)
+		{
+			Pause();
+		}
+		break;
 	}
 	for (int i = 0; i < 2; ++i)
 	{
 		if (players[i] != nullptr)
 			players[i]->HandleEvents(event);
 	}
-	button->Update(event);
+	//exitButton->Update(event);
 }
 
 void Game::Update()
 {
 	if (players[0] == nullptr && players[1] == nullptr)
 	{
-		cout << "DRAW";
 		ClearTheMap();
 		InitOthers();
 		return;
@@ -148,6 +154,7 @@ void Game::Update()
 
 void Game::Render()
 {
+
 	//clear the render
 	SDL_RenderClear(renderer);
 
@@ -172,7 +179,6 @@ void Game::Render()
 		(*powerUpIterator)->Render();
 	}
 	//and show all the results to the screen
-	button->Render();
 	SDL_RenderPresent(renderer);
 }
 
@@ -234,5 +240,14 @@ void Game::ClearTheMap()
 	{
 		if (players[i] != nullptr)
 			DeletePlayer(players[i]);
+	}
+}
+
+void Game::Resume()
+{
+	onPause = false;
+	for (auto it : bombs)
+	{
+		it->ResumeTimer();
 	}
 }

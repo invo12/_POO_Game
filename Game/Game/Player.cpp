@@ -7,7 +7,6 @@
 #include <list>
 
 using namespace std;
-
 int Player::numberOfPlayers = 0;
 Player* Player::players[2] = {nullptr};
 

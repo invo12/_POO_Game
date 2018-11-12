@@ -84,6 +84,15 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files\Basic</Filter>
     </ClCompile>
+    <ClCompile Include="StartButton.cpp">
+      <Filter>Source Files\Menu\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="SwitchPanelsButton.cpp">
+      <Filter>Source Files\Menu\Buttons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuElement.h">
@@ -123,6 +132,15 @@
       <Filter>Header Files\Basic</Filter>
     </ClInclude>
     <ClInclude Include="ExitButton.h">
+      <Filter>Header Files\Menu\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="StartButton.h">
+      <Filter>Header Files\Menu\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="SwitchPanelsButton.h">
       <Filter>Header Files\Menu\Buttons</Filter>
     </ClInclude>
   </ItemGroup>

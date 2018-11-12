@@ -23,14 +23,19 @@ public:
 	void Stop();
 	void Clean();			//Clear the desktop
 
-	bool Running() { return isRunning; }	//is game still running?
+	inline bool Running() { return isRunning; }	//is game still running?
+	inline bool IsPaused() { return onPause; }
+	inline void Pause() { onPause = true; }
+	void Resume();
 	static SDL_Renderer *renderer;			//renderer
 
+	static Uint32 pauseTime;
 	static int totalNumberOfBombs;
 	static list<Bomb*> bombs;
 	static list<PowerUp*> powerUps;
 private:		
-	bool isRunning;		
+	bool isRunning;
+	bool onPause;
 	SDL_Window *window;
 	void ClearLists();
 	void ClearTheMap();
