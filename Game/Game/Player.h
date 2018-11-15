@@ -33,6 +33,8 @@ public:
 	void IncreaseFire();
 	void IncreaseSpeed();
 
+	void SaveSpeed();
+	void LoadSpeed();
 	//BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM
 	int currentNumberOfBombs;
 
@@ -75,6 +77,9 @@ private:
 	//has player died yet?
 	bool die = false;
 	bool bUp, bDown, bLeft, bRight;
+
+	int savedSpeedX = 0;
+	int savedSpeedY = 0;
 };
 
 //method for getting rid of the player when he dies

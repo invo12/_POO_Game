@@ -6,8 +6,6 @@ ExitButton::ExitButton(int x, int y, int w, int h, const char* textureName,Game 
 	yPos = y;
 	width = w;
 	height = h;
-	src.w = 256;
-	src.h = 64;
 	dest.x = x;
 	dest.y = y;
 	dest.w = width;

@@ -25,7 +25,7 @@ public:
 
 	inline bool Running() { return isRunning; }	//is game still running?
 	inline bool IsPaused() { return onPause; }
-	inline void Pause() { onPause = true; }
+	void Pause();
 	void Resume();
 	static SDL_Renderer *renderer;			//renderer
 

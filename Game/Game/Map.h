@@ -31,9 +31,10 @@ public:
 private:
 
 	SDL_Rect src, dest;
+	SDL_Rect bgSrc, bgDest;
 
 	SDL_Texture* mWall;
-	SDL_Texture* mGrass;
+	SDL_Texture* mBackground;
 	SDL_Texture* mDestroyableBlock;
 
 	static int map[13][17];

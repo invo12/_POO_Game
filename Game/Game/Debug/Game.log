@@ -1,2 +1,24 @@
-﻿  main.cpp
+﻿  Player.cpp
+d:\facultate\poo giooooooc\game\game\player.cpp(16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(16): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(17): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(82): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(87): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(92): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(97): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(106): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(110): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(114): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(118): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(128): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(137): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(142): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(153): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(160): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(161): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(263): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(267): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(271): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\facultate\poo giooooooc\game\game\player.cpp(275): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   Game.vcxproj -> D:\facultate\POO GIOOOOOOC\Game\Debug\Game.exe

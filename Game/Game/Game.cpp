@@ -154,7 +154,6 @@ void Game::Update()
 
 void Game::Render()
 {
-
 	//clear the render
 	SDL_RenderClear(renderer);
 
@@ -243,11 +242,25 @@ void Game::ClearTheMap()
 	}
 }
 
+void Game::Pause()
+{
+	onPause = true;
+	for (int i = 0; i < 2; ++i)
+	{
+		if(players[i] != nullptr)
+			players[i]->SaveSpeed();
+	}
+}
+
 void Game::Resume()
 {
 	onPause = false;
 	for (auto it : bombs)
 	{
 		it->ResumeTimer();
+	}
+	for (int i = 0; i < 2; ++i)
+	{
+		players[i]->LoadSpeed();
 	}
 }

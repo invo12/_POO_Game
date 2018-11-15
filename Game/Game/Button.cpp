@@ -19,6 +19,8 @@ Button::Button(int x,int y,int w,int h,const char* textureName)
 }
 Button::Button()
 {
+	src.w = 256;
+	src.h = 64;
 }
 //void Button::Render()
 //{

@@ -24,15 +24,17 @@ int lvl1[13][17] = {
 Map::Map()
 {
 	mWall = TextureManager::LoadTexture("Assets/wall.png");
-	mGrass = TextureManager::LoadTexture("Assets/grass.png");
+	mBackground = TextureManager::LoadTexture("Assets/mapBackground.png");
 	mDestroyableBlock = TextureManager::LoadTexture("Assets/destroyable_block.png");
 
 	LoadMap(lvl1);
+	bgSrc.w = bgDest.w = GameConstants::screenWidth;
+	bgSrc.h = bgDest.h = GameConstants::screenHeight;
 	src.w = dest.w = GameConstants::tileWidth;
 	src.h = dest.h = GameConstants::tileHeight;
 
-	src.x = src.y = 0;
-	dest.x = dest.y = 0;
+	src.x = src.y = bgSrc.x = bgSrc.y = 0;
+	dest.x = dest.y = bgDest.x = bgDest.y = 0;
 }
 Map::~Map()
 {
@@ -69,6 +71,8 @@ void Map::DrawMap()
 	TileType type;
 	int k = 0;
 
+	TextureManager::Draw(mBackground, bgSrc, bgDest);
+
 	for (int i = 0; i < 13; i++)
 	{
 		for (int j = 0; j < 17; j++)
@@ -83,9 +87,6 @@ void Map::DrawMap()
 				break;
 			case TileType::WALL:
 				TextureManager::Draw(mWall, src, dest);
-				break;
-			default:
-				TextureManager::Draw(mGrass, src, dest);
 				break;
 			}
 		}

@@ -281,3 +281,27 @@ bool Player::isDead()
 {	
 	return die;
 }
+
+void Player::LoadSpeed()		// :D
+{
+	velX = savedSpeedX;
+	velY = savedSpeedY;
+	if (velX != 0)
+	{
+		velX = 0;
+		bLeft = false;
+		bRight = false;
+	}
+	if (velY != 0)
+	{
+		velY = 0;
+		bUp = false;
+		bDown = false;
+	}
+}
+
+void Player::SaveSpeed()
+{
+	savedSpeedX = velX;
+	savedSpeedY = velY;
+}
