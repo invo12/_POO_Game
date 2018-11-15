@@ -11,7 +11,7 @@ public:
 	Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKey, unsigned int downKey, unsigned int leftKey, unsigned int rightKey,unsigned int bombKey);
 	~Player();
 	//Take input and adjust player movement
-	void HandleEvents(SDL_Event& e);
+	void HandleEvents(const Uint8 *keys);
 	//move the player
 	void Move();
 
@@ -32,9 +32,6 @@ public:
 	void IncreaseNumberOfBombs();
 	void IncreaseFire();
 	void IncreaseSpeed();
-
-	void SaveSpeed();
-	void LoadSpeed();
 	//BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM
 	int currentNumberOfBombs;
 
@@ -44,7 +41,7 @@ private:
 	float posX,posY;
 
 	//The velocity of the player
-	int velX,velY;
+	float velX,velY;
 
 	//collider box
 	SDL_Rect playerCollider;
@@ -76,10 +73,6 @@ private:
 
 	//has player died yet?
 	bool die = false;
-	bool bUp, bDown, bLeft, bRight;
-
-	int savedSpeedX = 0;
-	int savedSpeedY = 0;
 };
 
 //method for getting rid of the player when he dies

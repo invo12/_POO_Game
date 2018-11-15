@@ -60,8 +60,10 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 
 void Game::HandleEvents()
 {
+	const Uint8 *keys = SDL_GetKeyboardState(nullptr);
 	SDL_Event event;
 	SDL_PollEvent(&event);	//gets the most recent event that happened in our game(mouse move,key press etc)
+	SDL_PumpEvents();
 	int x = 0, y = 0;
 	switch (event.type)
 	{
@@ -78,7 +80,7 @@ void Game::HandleEvents()
 	for (int i = 0; i < 2; ++i)
 	{
 		if (players[i] != nullptr)
-			players[i]->HandleEvents(event);
+			players[i]->HandleEvents(keys);
 	}
 	//exitButton->Update(event);
 }
@@ -225,8 +227,8 @@ void Game::ClearLists()
 
 void InitOthers()
 {
-	players[0] = new Player("Assets/circle.png", GameConstants::tileWidth + 5, GameConstants::tileHeight + 5, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE);
-	players[1] = new Player("Assets/circle.png",GameConstants::screenWidth - 2 * GameConstants::tileWidth - 5,GameConstants::screenHeight - 2 * GameConstants::tileHeight + 5, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_q);
+	players[0] = new Player("Assets/player1.png", GameConstants::tileWidth + 5, GameConstants::tileHeight + 5, SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SDL_SCANCODE_SPACE);
+	players[1] = new Player("Assets/player2.png",GameConstants::screenWidth - 2 * GameConstants::tileWidth - 5,GameConstants::screenHeight - 2 * GameConstants::tileHeight + 5, SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_Q);
 	map = new Map();
 }
 
@@ -242,25 +244,11 @@ void Game::ClearTheMap()
 	}
 }
 
-void Game::Pause()
-{
-	onPause = true;
-	for (int i = 0; i < 2; ++i)
-	{
-		if(players[i] != nullptr)
-			players[i]->SaveSpeed();
-	}
-}
-
 void Game::Resume()
 {
 	onPause = false;
 	for (auto it : bombs)
 	{
 		it->ResumeTimer();
-	}
-	for (int i = 0; i < 2; ++i)
-	{
-		players[i]->LoadSpeed();
 	}
 }

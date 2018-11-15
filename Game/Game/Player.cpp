@@ -29,11 +29,6 @@ Player::Player(const char* playerTextureName,int xPos,int yPos,unsigned int upKe
 	//initialize velocities
 	velX = 0;
 	velY = 0;
-	
-	bUp = false;
-	bDown = false;
-	bLeft = false;
-	bRight = false;
 
 	//PROPRIETEEEES
 	//initialize the player number of bombs
@@ -66,61 +61,48 @@ Player::~Player()
 	numberOfPlayers--;
 }
 
-void Player::HandleEvents(SDL_Event& event)
+void Player::HandleEvents(const Uint8 *keys)
 {
-	//If a key was pressed
-	if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
+	//place a bomb if we press the place bomb key
+	if (keys[bombKey])
 	{
-		//place a bomb if we press the place bomb key
-		if (event.key.keysym.sym == bombKey)
-		{
-			PlaceBomb();
-		}
-		//Adjust the velocity
-		if (event.key.keysym.sym == upKey)
-		{
-			velY -= playerVelocity;
-			bUp = true;
-		}
-		else if (event.key.keysym.sym == downKey)
-		{
-			velY += playerVelocity;
-			bDown = true;
-		}
-		else if (event.key.keysym.sym == leftKey)
-		{
-			velX -= playerVelocity;
-			bLeft = true;
-		}
-		else if (event.key.keysym.sym == rightKey)
-		{
-			velX += playerVelocity;
-			bRight = true;
-		}
+		PlaceBomb();
 	}
-	else if (event.type == SDL_KEYUP && event.key.repeat == 0)
+	if (keys[leftKey] && keys[rightKey])
 	{
-		//Adjust the velocity
-		if (event.key.keysym.sym == upKey && bUp)
-		{
-			velY += playerVelocity;
-		}
-		if (event.key.keysym.sym == downKey && bDown)
-		{
-			velY -= playerVelocity;
-		}
-		if (event.key.keysym.sym == leftKey && bLeft)
-		{
-			velX += playerVelocity;
-		}
-		if (event.key.keysym.sym == rightKey && bRight)
-		{
-			velX -= playerVelocity;
-		}
+		velX = 0;
+	}
+	else if (keys[leftKey])
+	{
+		velX = -playerVelocity;
+	}
+	else if (keys[rightKey])
+	{
+		velX = playerVelocity;
+	}
+	else
+	{
+		velX = 0;
+	}
+
+	if (keys[upKey] && keys[downKey])
+	{
+		velY = 0;
+	}
+	else if (keys[upKey])
+	{
+		velY = -playerVelocity;
+	}
+	else if (keys[downKey])
+	{
+		velY = playerVelocity;
+	}
+	else
+	{
+		velY = 0;
 	}
 	Move();
 }
-
 void Player::Move()
 {
 	//Move the player on X axis and update box collider position
@@ -280,28 +262,4 @@ void Player::IncreaseSpeed()
 bool Player::isDead()
 {	
 	return die;
-}
-
-void Player::LoadSpeed()		// :D
-{
-	velX = savedSpeedX;
-	velY = savedSpeedY;
-	if (velX != 0)
-	{
-		velX = 0;
-		bLeft = false;
-		bRight = false;
-	}
-	if (velY != 0)
-	{
-		velY = 0;
-		bUp = false;
-		bDown = false;
-	}
-}
-
-void Player::SaveSpeed()
-{
-	savedSpeedX = velX;
-	savedSpeedY = velY;
 }
