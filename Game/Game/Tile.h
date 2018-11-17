@@ -16,6 +16,7 @@ class Tile
 public:
 	//constructor
 	Tile(int x,int y,TileType tileType);
+	~Tile() {};
 	//method for obtaining the type
 	TileType getType();
 

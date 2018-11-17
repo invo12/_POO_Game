@@ -10,6 +10,7 @@ class MenuElement
 {
 public:
 	MenuElement();
+	~MenuElement() {};
 	SDL_Texture* texture;
 	virtual void Render();
 	void SetActive(bool active,bool activeState);

@@ -64,3 +64,8 @@ void PowerUp::Render()
 		TextureManager::Draw(speedTexture, mSrc, mDest);
 	}
 }
+
+SDL_Rect PowerUp::GetPosition()
+{
+	return mDest;
+}

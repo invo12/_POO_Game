@@ -1,8 +1,6 @@
 #include "SDL.h"
-
 #include "Menu.h"
 #include "Game.h"
-#include "GameConstants.h"
 
 Game *game = nullptr;
 Menu *menu = nullptr;
@@ -40,7 +38,8 @@ int main(int argc, char*argv[])
 			SDL_Delay(frameDelay - frameTime);
 		}
 	}
-	//system("color 2");
 	game->Clean();
+	delete game;
+	delete menu;
 	return 0;
 }

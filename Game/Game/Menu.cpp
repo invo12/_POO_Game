@@ -1,7 +1,4 @@
 #include "Menu.h"
-#include "StartButton.h"
-#include "ExitButton.h"
-#include "SwitchPanelsButton.h"
 
 Menu::Menu(Game* game)
 {
@@ -9,8 +6,6 @@ Menu::Menu(Game* game)
 	buttons.clear();
 	this->game = game;
 }
-Menu::~Menu()
-{}
 void Menu::BuildTheMenu()
 {
 	Panel* mainPanel = new Panel(0, 0, GameConstants::screenWidth, GameConstants::screenHeight, "Assets/Background.png");;
@@ -82,4 +77,28 @@ void Menu::Render()
 	}
 	//and show all the results to the screen
 	SDL_RenderPresent(game->renderer);				//:D
+}
+Menu::~Menu()
+{
+	int i = 0;
+	if (!panels.empty())
+	{
+		list<Panel*>::iterator it;
+		for (it = panels.begin();it != panels.end();++it)
+		{
+			i++;
+			delete (*it);
+			*it = nullptr;
+		}
+	}
+	if (!buttons.empty())
+	{
+		list<Button*>::iterator it;
+		for (it = buttons.begin(); it != buttons.end(); ++it)
+		{
+			i++;
+			delete (*it);
+			*it = nullptr;
+		}
+	}
 }

@@ -1,8 +1,14 @@
 #pragma once
-#include "Game.h"
 #include "Map.h"
 #include "Bomb.h"
 #include "PowerUp.h"
+#include "GameConstants.h"
+#include "TextureManager.h"
+#include "Collision.h"
+#include <math.h>
+#include <iostream>
+#include <list>
+
 class Player
 {
 public:

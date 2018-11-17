@@ -1,6 +1,4 @@
 #include "Button.h"
-#include "TextureManager.h"
-#include <iostream>
 using namespace std;
 
 Button::Button(int x,int y,int w,int h,const char* textureName)
@@ -19,16 +17,9 @@ Button::Button(int x,int y,int w,int h,const char* textureName)
 }
 Button::Button()
 {
-	src.w = 256;
-	src.h = 64;
+	src.w = GameConstants::menuButtonWidth;
+	src.h = GameConstants::menuButtonHeight;
 }
-//void Button::Render()
-//{
-//	if (hover)
-//		TextureManager::Draw(buttonActive, src, dest);
-//	else
-//		TextureManager::Draw(buttonInactive, src, dest);
-//}
 
 void Button::Update(SDL_Event &event)
 {

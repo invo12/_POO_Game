@@ -13,6 +13,7 @@ class PowerUp
 {
 public:
 	static void Init();
+	SDL_Rect GetPosition();
 	PowerUp(PowerUpType powerType, SDL_Rect collider);
 	~PowerUp();
 	int Update();

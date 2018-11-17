@@ -27,6 +27,8 @@ public:
 	inline bool IsPaused() { return onPause; }
 	inline void Pause() { onPause = true; }
 	void Resume();
+	void ShowScore();
+	void ResetScore();
 	static SDL_Renderer *renderer;			//renderer
 
 	static Uint32 pauseTime;
@@ -39,6 +41,11 @@ private:
 	SDL_Window *window;
 	void ClearLists();
 	void ClearTheMap();
+	Uint32 deathTimer = 0;
+	const int timeToWin = 2000;
+	const int roundsToWin = 3;
+	int playerScores[2];
+	int numberOfPlayers = 0;
 };
 
 void InitOthers();

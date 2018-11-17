@@ -1,10 +1,4 @@
 #include "Player.h"
-#include "GameConstants.h"
-#include "TextureManager.h"
-#include "Collision.h"
-#include <math.h>
-#include <iostream>
-#include <list>
 
 using namespace std;
 int Player::numberOfPlayers = 0;
@@ -145,7 +139,7 @@ void Player::Update()
 
 	for (bombIterator = Game::bombs.begin(); bombIterator != Game::bombs.end(); ++bombIterator)
 	{
-		if ((*bombIterator)->set[playerNumber] == 0 && abs(posX - (*bombIterator)->GetBomb().x) < 60 && abs(posY - (*bombIterator)->GetBomb().y) < 60)
+		if ((*bombIterator)->set[playerNumber] == 0 && abs(posX - (*bombIterator)->GetBomb().x) < 55 && abs(posY - (*bombIterator)->GetBomb().y) < 55)
 		{
 			(*bombIterator)->set[playerNumber] = 1;
 			ignoredCollisions.push_front((*bombIterator)->GetBomb());

@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "MenuElement.h"
+#include "TextureManager.h"
 
 enum class MouseButton
 {
@@ -20,11 +21,11 @@ protected:
 public:
 	Button(int x,int y,int w,int h, const char* textureName);
 	Button();
+	~Button() {};
 	inline bool ButtonWasPressed()
 	{
 		return pressed;
 	}
-	//void Render() override;
 	void Update(SDL_Event &event);
 	virtual void OnPressedButton();
 };

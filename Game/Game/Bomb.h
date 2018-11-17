@@ -43,9 +43,9 @@ private:
 
 	//timer part of the bomb
 	Uint32 mStartTime;
-	int mTimeToExplode = 2000;
-	int mCurrentTime;
-	int mTimeToDestroyAfterExplosion = 600;
+	unsigned int mTimeToExplode = 2000;
+	unsigned int mCurrentTime;
+	unsigned int mTimeToDestroyAfterExplosion = 400;
 
 	//proprietes
 	int mBombPower;

@@ -1,5 +1,4 @@
 #include "Tile.h"
-#include "GameConstants.h"
 
 Tile::Tile(int x, int y, TileType tileType)
 {
@@ -22,4 +21,3 @@ SDL_Rect Tile::getCollider()
 {
 	return mTileCollider;
 }
-

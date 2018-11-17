@@ -1,5 +1,4 @@
 #include "Panel.h"
-#include <iostream>
 using namespace std;
 Panel::Panel(int x,int y,int w,int h,const char* textureName)
 {

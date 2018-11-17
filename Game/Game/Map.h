@@ -1,6 +1,7 @@
 #pragma once
 #include "Game.h"
 #include "PowerUp.h"
+#include "TextureManager.h"
 #include <iostream>
 #include <list>
 using namespace std;

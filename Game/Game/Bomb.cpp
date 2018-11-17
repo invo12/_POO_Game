@@ -1,7 +1,5 @@
 #include "Bomb.h"
-#include "Map.h"
 #include "Player.h"
-#include "TextureManager.h"
 #include <iostream>
 using namespace std;
 
@@ -31,8 +29,8 @@ Bomb::Bomb(int x,int y,int bombPower,int playerNumber)
 {
 	//cut the bomb from file
 	src.x = src.y = 0;
-	src.w = 300;
-	src.h = 300;
+	src.w = GameConstants::bombSpriteWidth;
+	src.h = GameConstants::bombSpriteHeight;
 
 	//place the bomb on the specific tile
 	dest.w = GameConstants::tileWidth;
@@ -197,24 +195,50 @@ void setDestination(SDL_Rect &dest,int x,int y)
 void GetMaxDistanceInDirection(int &maxDistance,int bombPower,int xPos,int yPos,int xSign,int ySign)
 {
 	TileType temp;
+	bool wall = false;
+	list<PowerUp*>::iterator it;
 	for (int i = 0; i < bombPower; ++i)
 	{
 		temp = Map::GetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i+1) * GameConstants::tileHeight * ySign);
 		//if it's grass ignore it and continue
-		if (temp == TileType::GRASS)
+		switch (temp)
 		{
+		case TileType::GRASS:
 			maxDistance++;
 			Map::SetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::EXPLOSION);
 			Collision::AddCollisionOnMap(Map::explosionTiles, xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::EXPLOSION);
-		}
-		//if it's wall then you can't pass
-		else if (temp == TileType::WALL)
-		{
 			break;
-		}
-		//if it's a destroyable block then make the explosion hover it then stop 
-		else if (temp == TileType::DESTROYABLEBLOCK)
-		{
+			//if it's wall then you can't pass
+		case TileType::WALL:
+			wall = true;
+			break;
+
+		//if it's other bomb it should explode
+		case TileType::BOMB:
+			ForceExplosion(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
+			wall = true;
+			break;
+
+		case TileType::EXPLOSION:
+			wall = true;
+			break;
+		case TileType::POWERUP:
+			maxDistance++;
+			wall = true;
+			for (it = Game::powerUps.begin(); it != Game::powerUps.end(); ++it)
+			{
+				if ((*it)->GetPosition().x == xPos + (i + 1) * GameConstants::tileWidth * xSign && (*it)->GetPosition().y == yPos + (i + 1) * GameConstants::tileHeight * ySign)
+				{
+					delete (*it);
+					(*it) = nullptr;
+					Game::powerUps.erase(it);
+					Map::SetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::GRASS);
+					break;
+				}
+			}
+			break;
+			//if it's a destroyable block then make the explosion hover it then stop 
+		case TileType::DESTROYABLEBLOCK:
 			Map::SetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::EXPLOSION);
 			maxDistance++;
 			PowerUpType powerUpType = Map::DestroyBlock(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
@@ -226,15 +250,13 @@ void GetMaxDistanceInDirection(int &maxDistance,int bombPower,int xPos,int yPos,
 				collider.w = GameConstants::tileWidth;
 				collider.h = GameConstants::tileHeight;
 				Game::powerUps.push_front(new PowerUp(powerUpType, collider));
+				Map::SetTileType(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign, TileType::POWERUP);
 			}
+			wall = true;
 			break;
 		}
-		//if it's other bomb it should explode
-		else if (temp == TileType::BOMB)
-		{
-			ForceExplosion(xPos + (i + 1) * GameConstants::tileWidth * xSign, yPos + (i + 1) * GameConstants::tileHeight * ySign);
+		if (wall)
 			break;
-		}
 	}
 }
 

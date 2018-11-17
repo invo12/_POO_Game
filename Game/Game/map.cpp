@@ -1,9 +1,12 @@
 #include "Map.h"
-#include "TextureManager.h"
-#include <iostream>
+
 using namespace std;
 
 int Map::map[13][17];
+int Map::totalMapCollisionTiles = 0;
+list<Tile*> Map::collisionTiles{};
+list<Tile*> Map::explosionTiles{};
+list<Tile*> Map::bombTiles{};
 
 int lvl1[13][17] = {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -42,10 +45,6 @@ Map::~Map()
 	ClearList(explosionTiles);
 	ClearList(bombTiles);
 }
-int Map::totalMapCollisionTiles = 0;
-list<Tile*> Map::collisionTiles{};
-list<Tile*> Map::explosionTiles{};
-list<Tile*> Map::bombTiles{};
 
 void Map::LoadMap(int mapMatrix[13][17])
 {
@@ -61,7 +60,7 @@ void Map::LoadMap(int mapMatrix[13][17])
 			if (type == static_cast<int>(TileType::GRASS) || i == 0 || j == 0 || i == 12 || j == 16)	//if it's not grass or in the outer rectangle
 				continue;
 			collisionTiles.push_front(new Tile(j * GameConstants::tileWidth, i * GameConstants::tileHeight, static_cast<TileType>(type)));
-	}
+		}
 	}
 	totalMapCollisionTiles = k;									//save the total number of tiles
 }
@@ -100,17 +99,14 @@ PowerUpType Map::DestroyBlock(int x, int y)
 	int r = rand() % 100;
 	if (r < GameConstants::chanceForExtraBomb)
 	{
-		cout << "BOMB";
 		return PowerUpType::BOMB;
 	}
 	else if (r < GameConstants::chanceForExtraFire)
 	{
-		cout << "FIRE";
 		return PowerUpType::FIRE;
 	}
 	else if (r < GameConstants::chanceForExtraSpeed)
 	{
-		cout << "SPEED";
 		return PowerUpType::SPEED;
 	}
 	else

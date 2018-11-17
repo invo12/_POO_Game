@@ -14,4 +14,10 @@ public:
 	static const int chanceForExtraBomb = 10;	//10%
 	static const int chanceForExtraFire = 25;	//15%
 	static const int chanceForExtraSpeed = 40;	//15%
+
+	static const int menuButtonWidth = 256;
+	static const int menuButtonHeight = 64;
+
+	static const int bombSpriteWidth = 300;
+	static const int bombSpriteHeight = 300;
 };

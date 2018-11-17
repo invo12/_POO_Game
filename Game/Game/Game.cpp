@@ -3,7 +3,6 @@
 #include "Player.h"
 #include "Collision.h"
 #include "Menu.h"
-
 using namespace std;
 
 Player* players[2]{ nullptr };
@@ -22,7 +21,6 @@ Game::Game()
 //deconstructor
 Game::~Game()
 {
-
 }
 
 void Game::Init(const char* title, int xPosition, int yPosition, int width, int height, bool fullScreen)
@@ -54,8 +52,10 @@ void Game::Init(const char* title, int xPosition, int yPosition, int width, int 
 	}
 
 	InitOthers();
+	numberOfPlayers = Player::numberOfPlayers;
 	Bomb::Init();
 	PowerUp::Init();
+	ResetScore();
 }
 
 void Game::HandleEvents()
@@ -63,7 +63,6 @@ void Game::HandleEvents()
 	const Uint8 *keys = SDL_GetKeyboardState(nullptr);
 	SDL_Event event;
 	SDL_PollEvent(&event);	//gets the most recent event that happened in our game(mouse move,key press etc)
-	SDL_PumpEvents();
 	int x = 0, y = 0;
 	switch (event.type)
 	{
@@ -73,58 +72,66 @@ void Game::HandleEvents()
 	case SDL_KEYDOWN:
 		if (event.key.keysym.sym == SDLK_ESCAPE)
 		{
+			ClearTheMap();
+			InitOthers();
 			Pause();
+			ResetScore();
 		}
 		break;
 	}
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < numberOfPlayers; ++i)
 	{
 		if (players[i] != nullptr)
 			players[i]->HandleEvents(keys);
 	}
-	//exitButton->Update(event);
 }
 
 void Game::Update()
 {
-	if (players[0] == nullptr && players[1] == nullptr)
-	{
-		ClearTheMap();
-		InitOthers();
-		return;
-	}
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < numberOfPlayers; ++i)
 	{
 		if (players[i] != nullptr)
 		{
 			players[i]->Update();
-			if (players[i]->isDead())
-				DeletePlayer(players[i]);
-			if (Player::numberOfPlayers == 1)
+			if (playerScores[i] == roundsToWin)
 			{
-				cout << "Player " << i << " won";
+				cout << "\n\n\n\n\n\n\n\n\nPlayer " << i + 1 << "won\n\n\n\n\n\n\n\n";
 				ClearTheMap();
 				InitOthers();
+				Pause();
+				ResetScore();
+			}
+			if (players[i]->isDead())
+			{
+				DeletePlayer(players[i]);
+				deathTimer = SDL_GetTicks();
 			}
 		}
 	}
-	//bombs
-	list<Bomb*>::iterator bombIterator;
-	for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
+	if (Player::numberOfPlayers == 1)
 	{
-		if (!(*bombIterator)->Update())
+		for (int i = 0; i < numberOfPlayers; ++i)
 		{
-			for (int i = 0; i < 2; ++i)
+			if (SDL_GetTicks() - deathTimer > timeToWin)
 			{
-				if ((*bombIterator)->GetParent() == i && players[i] != nullptr)
+				if (players[i] != nullptr)
 				{
-					players[i]->currentNumberOfBombs--;
+					deathTimer = SDL_GetTicks();
+					playerScores[i]++;
+					ShowScore();
+					ClearTheMap();
+					InitOthers();
 				}
 			}
-			Collision::RemoveCollisionFromMap(map->bombTiles, (*bombIterator)->GetBomb().x, (*bombIterator)->GetBomb().y);
-			delete *bombIterator;
-			bombs.remove(*bombIterator);
-			break;
+		}
+	}
+	if (Player::numberOfPlayers == 0)
+	{
+		if (SDL_GetTicks() - deathTimer > timeToWin)
+		{
+			ShowScore();
+			ClearTheMap();
+			InitOthers();
 		}
 	}
 
@@ -152,6 +159,25 @@ void Game::Update()
 			break;
 		}
 	}
+	//bombs
+	list<Bomb*>::iterator bombIterator;
+	for (bombIterator = bombs.begin(); bombIterator != bombs.end(); ++bombIterator)
+	{
+		if (!(*bombIterator)->Update())
+		{
+			for (int i = 0; i < numberOfPlayers; ++i)
+			{
+				if ((*bombIterator)->GetParent() == i && players[i] != nullptr)
+				{
+					players[i]->currentNumberOfBombs--;
+				}
+			}
+			Collision::RemoveCollisionFromMap(map->bombTiles, (*bombIterator)->GetBomb().x, (*bombIterator)->GetBomb().y);
+			delete *bombIterator;
+			bombs.remove(*bombIterator);
+			break;
+		}
+	}
 }
 
 void Game::Render()
@@ -162,7 +188,7 @@ void Game::Render()
 	//then render the map
 	map->DrawMap();
 	//then the player
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < numberOfPlayers; ++i)
 		if (players[i] != nullptr)
 		{
 			players[i]->Render();
@@ -194,9 +220,7 @@ void Game::Clean()
 	window = nullptr;
 	SDL_DestroyRenderer(renderer);
 	renderer = nullptr;
-	delete map;
-	map = nullptr;
-	ClearLists();
+	ClearTheMap();
 	SDL_Quit();
 	cout << "Game finished";
 }
@@ -250,5 +274,23 @@ void Game::Resume()
 	for (auto it : bombs)
 	{
 		it->ResumeTimer();
+	}
+}
+
+void Game::ShowScore()
+{
+	cout << "\n\n";
+	for (int i = 0; i < numberOfPlayers - 1; ++i)
+	{
+		cout << playerScores[i] << ':';
+	}
+	cout << playerScores[numberOfPlayers - 1]<<'\n';
+}
+
+void Game::ResetScore()
+{
+	for (int i = 0; i < numberOfPlayers; ++i)
+	{
+		playerScores[i] = 0;
 	}
 }
